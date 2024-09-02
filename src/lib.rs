@@ -21,9 +21,13 @@ pub trait CheckedSub: Sized {
     fn checked_sub(self, other: Self) -> Option<Self>;
 }
 
+pub trait CheckedMul: Sized {
+    fn checked_mul(self, other: Self) -> Option<Self>;
+}
+
 impl<T> Intfinity<T>
 where
-    T: Copy + Add<Output = T> + PartialOrd + Zero + CheckedAdd + CheckedSub
+    T: Copy + Add<Output = T> + PartialOrd + Zero + CheckedAdd + CheckedSub + CheckedMul
 {
     // constructor using new
     pub fn new(value: T) -> Self {
@@ -89,11 +93,78 @@ where
             },
             // inf - x || x - (-inf)
             (Intfinity::PosInfinity, _) | (_, Intfinity::NegInfinity) => Self::PosInfinity,
-            // (-inf) - x || x - inf
+            // -inf - x || x - inf
             (Intfinity::NegInfinity, _) | (_, Intfinity::PosInfinity) => Self::NegInfinity,
         }
     }
 }
+
+impl<T> Mul for Intfinity<T>
+where
+    T: Copy + Mul<Output = T> + PartialOrd + Zero + CheckedMul,
+{
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self::Output {
+        match (self, other) {
+            // finite * finite
+            (Intfinity::Finite(a), Intfinity::Finite(b)) => {
+                a.checked_mul(b)
+                    .map_or_else(
+                        || {
+                            if (a > T::zero() && b > T::zero()) || (a < T::zero() && b < T::zero()) {
+                                Self::PosInfinity
+                            } else {
+                                Self::NegInfinity
+                            }
+                        },
+                        Intfinity::Finite,
+                    )
+            },
+            /*
+                inf * x = {
+                    undefined, x = 0;
+                    +inf, x > 0;
+                    -inf, x < 0
+                }
+            */
+            (Intfinity::PosInfinity, Intfinity::Finite(a)) | (Intfinity::Finite(a), Intfinity::PosInfinity) => {
+                if a.is_zero() {
+                    panic!("indefinite form: 0 * inf") 
+                } else if a > T::zero() {
+                    Self::PosInfinity
+                } else {
+                    Self::NegInfinity
+                }
+            },
+            /*
+                -inf * x = {
+                    undefined, x = 0;
+                    -inf, x > 0;
+                    +inf, x < 0
+                }
+            */
+            (Intfinity::NegInfinity, Intfinity::Finite(a)) | (Intfinity::Finite(a), Intfinity::NegInfinity) => {
+                if a.is_zero() {
+                    panic!("indefinite form: 0 * -inf")  
+                } else if a > T::zero() {
+                    Self::NegInfinity
+                } else {
+                    Self::PosInfinity
+                }
+            },
+            // inf * inf || -inf * (-inf)
+            (Intfinity::PosInfinity, Intfinity::PosInfinity) | (Intfinity::NegInfinity, Intfinity::NegInfinity) => {
+                Self::PosInfinity
+            },
+            // -inf * inf
+            (Intfinity::PosInfinity, Intfinity::NegInfinity) | (Intfinity::NegInfinity, Intfinity::PosInfinity) => {
+                Self::NegInfinity
+            },
+        }
+    }
+}
+
 
 
 impl Zero for i32 {
@@ -115,6 +186,12 @@ impl CheckedAdd for i32 {
 impl CheckedSub for i32 {
     fn checked_sub(self, other: i32) -> Option<i32> {
         self.checked_sub(other)
+    }
+}
+
+impl CheckedMul for i32 {
+    fn checked_mul(self, other: i32) -> Option<i32> {
+        self.checked_mul(other)
     }
 }
 
@@ -147,12 +224,12 @@ mod tests {
     }
 
     #[test]
+    #[should_panic(expected = "indeterminate form: +inf + (-inf)")]
     fn test_addition_positive_and_negative_infinity() {
         let pos_inf: Intfinity<i32> = Intfinity::PosInfinity;
         let neg_inf = Intfinity::NegInfinity;
 
-        let result = std::panic::catch_unwind(|| pos_inf + neg_inf);
-        assert!(result.is_err());  // panic because indeterminate form
+        let result = pos_inf + neg_inf;
     }
 
     #[test]
@@ -218,15 +295,13 @@ mod tests {
     }
 
     #[test]
+    #[should_panic(expected = "indeterminate form: inf - inf")]
     fn test_subtraction_inf_minus_inf_should_panic() {
         let pos_inf: Intfinity<i32> = Intfinity::PosInfinity;
         let neg_inf: Intfinity<i32> = Intfinity::NegInfinity;
 
-        let result = std::panic::catch_unwind(|| pos_inf - pos_inf);
-        assert!(result.is_err());  // Should panic due to indeterminate form
-
-        let result = std::panic::catch_unwind(|| neg_inf - neg_inf);
-        assert!(result.is_err());  // Should also panic due to indeterminate form
+        let result = pos_inf - pos_inf;
+        let result = neg_inf - neg_inf;
     }
 
     #[test]
@@ -235,5 +310,99 @@ mod tests {
         let b = Intfinity::new(-1);
         let result = a - b;
         assert_eq!(result, Intfinity::PosInfinity);
+    }
+
+    #[test]
+    fn test_multiplication_finite_values() {
+        let a = Intfinity::new(4);
+        let b = Intfinity::new(5);
+        let result = a * b;
+        assert_eq!(result, Intfinity::Finite(20));
+    }
+
+    #[test]
+    fn test_multiplication_with_overflow() {
+        let a = Intfinity::new(i32::MAX);
+        let b = Intfinity::new(2);
+        let result = a * b;
+        assert_eq!(result, Intfinity::PosInfinity);
+    }
+
+    #[test]
+    #[should_panic(expected = "indefinite form: 0 * inf")]
+    fn test_multiplication_by_zero_and_infinity() {
+        let a = Intfinity::new(0);
+        let b = Intfinity::PosInfinity;
+        let _result = a * b; 
+    }
+
+    #[test]
+    #[should_panic(expected = "indefinite form: 0 * -inf")]
+    fn test_multiplication_by_zero_and_negative_infinity() {
+        let a = Intfinity::new(0);
+        let b = Intfinity::NegInfinity;
+        let _result = a * b;  
+    }
+
+    #[test]
+    fn test_multiplication_with_infinity() {
+        let a = Intfinity::new(4);
+        let result = a * Intfinity::PosInfinity;
+        assert_eq!(result, Intfinity::PosInfinity);
+
+        let a = Intfinity::new(-4);
+        let result = a * Intfinity::PosInfinity;
+        assert_eq!(result, Intfinity::NegInfinity);
+
+        let a = Intfinity::new(4);
+        let result = a * Intfinity::NegInfinity;
+        assert_eq!(result, Intfinity::NegInfinity);
+
+        let a = Intfinity::new(-4);
+        let result = a * Intfinity::NegInfinity;
+        assert_eq!(result, Intfinity::PosInfinity);
+    }
+
+    #[test]
+    fn test_multiplication_infinity_by_infinity() {
+        let result: Intfinity<i32> = Intfinity::PosInfinity * Intfinity::PosInfinity;
+        assert_eq!(result, Intfinity::PosInfinity);
+
+        let result: Intfinity<i32> = Intfinity::NegInfinity * Intfinity::NegInfinity;
+        assert_eq!(result, Intfinity::PosInfinity);
+
+        let result: Intfinity<i32> = Intfinity::PosInfinity * Intfinity::NegInfinity;
+        assert_eq!(result, Intfinity::NegInfinity);
+
+        let result: Intfinity<i32> = Intfinity::NegInfinity * Intfinity::PosInfinity;
+        assert_eq!(result, Intfinity::NegInfinity);
+    }
+
+    #[test]
+    fn test_multiplication_with_negative_numbers() {
+        let a = Intfinity::new(-3);
+        let b = Intfinity::new(6);
+        let result = a * b;
+        assert_eq!(result, Intfinity::Finite(-18));
+
+        let result = a * Intfinity::PosInfinity;
+        assert_eq!(result, Intfinity::NegInfinity);
+
+        let result = a * Intfinity::NegInfinity;
+        assert_eq!(result, Intfinity::PosInfinity);
+    }
+
+    #[test]
+    fn test_multiplication_with_positive_numbers() {
+        let a = Intfinity::new(3);
+        let b = Intfinity::new(6);
+        let result = a * b;
+        assert_eq!(result, Intfinity::Finite(18));
+
+        let result = a * Intfinity::PosInfinity;
+        assert_eq!(result, Intfinity::PosInfinity);
+
+        let result = a * Intfinity::NegInfinity;
+        assert_eq!(result, Intfinity::NegInfinity);
     }
 }
