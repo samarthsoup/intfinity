@@ -1,4 +1,5 @@
 use crate::traits::{Zero, Negate, CheckedAdd, CheckedSub, CheckedMul, CheckedDiv};
+use crate::Intfinity;
 
 impl Zero for i32 {
     fn zero() -> Self {
@@ -37,5 +38,21 @@ impl CheckedMul for i32 {
 impl CheckedDiv for i32 {
     fn checked_div(self, other: i32) -> Option<i32> {
         self.checked_div(other)
+    }
+}
+
+impl From<i32> for Intfinity<i32> {
+    fn from(value: i32) -> Self {
+        Intfinity::Finite(value)
+    }
+}
+
+impl Into<i32> for Intfinity<i32> {
+    fn into(self) -> i32 {
+        match self {
+            Intfinity::Finite(val) => val,
+            Intfinity::PosInfinity => i32::MAX, 
+            Intfinity::NegInfinity => i32::MIN,
+        }
     }
 }
