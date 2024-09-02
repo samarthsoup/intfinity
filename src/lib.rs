@@ -13,6 +13,10 @@ pub trait Zero {
     fn is_zero(&self) -> bool;
 }
 
+pub trait Negate {
+    fn negate(self) -> Self;
+}
+
 pub trait CheckedAdd: Sized {
     fn checked_add(self, other: Self) -> Option<Self>;
 }
@@ -25,9 +29,13 @@ pub trait CheckedMul: Sized {
     fn checked_mul(self, other: Self) -> Option<Self>;
 }
 
+pub trait CheckedDiv: Sized {
+    fn checked_div(self, other: Self) -> Option<Self>;
+}
+
 impl<T> Intfinity<T>
 where
-    T: Copy + Add<Output = T> + PartialOrd + Zero + CheckedAdd + CheckedSub + CheckedMul
+    T: Copy + Add<Output = T> + PartialOrd + Zero + CheckedAdd + CheckedSub + CheckedMul + CheckedDiv + Negate
 {
     // constructor using new
     pub fn new(value: T) -> Self {
@@ -42,6 +50,20 @@ where
         }
     }
 }
+
+impl<T> Intfinity<T>
+where
+    T: Copy + Negate,
+{
+    pub fn negate_intfinity(self) -> Self {
+        match self {
+            Intfinity::Finite(value) => Intfinity::Finite(value.negate()), 
+            Intfinity::PosInfinity => Intfinity::NegInfinity,  
+            Intfinity::NegInfinity => Intfinity::PosInfinity,  
+        }
+    }
+}
+
 
 impl<T> Add for Intfinity<T>
 where
@@ -165,6 +187,55 @@ where
     }
 }
 
+impl<T> Div for Intfinity<T>
+where
+    T: Copy + Div<Output = T> + PartialOrd + Zero + CheckedDiv + Negate,
+{
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self::Output {
+        match (self, other) {
+            // finite/finite
+            (Intfinity::Finite(a), Intfinity::Finite(b)) => {
+                if b.is_zero() {
+                    panic!("division by zero")
+                } else {
+                    a.checked_div(b)
+                        .map_or_else(
+                            || if (a > T::zero() && b > T::zero()) || (a < T::zero() && b < T::zero()) {
+                                Self::PosInfinity
+                            } else {
+                                Self::NegInfinity
+                            },
+                            Intfinity::Finite
+                        )
+                }
+            },
+            // x/inf
+            (Intfinity::Finite(_), Intfinity::PosInfinity) | (Intfinity::Finite(_), Intfinity::NegInfinity) => {
+                Intfinity::Finite(T::zero())
+            },
+            // inf/x
+            (Intfinity::PosInfinity, Intfinity::Finite(a)) | (Intfinity::NegInfinity, Intfinity::Finite(a)) => {
+                if a.is_zero() {
+                    panic!("division by zero")
+                } else if a > T::zero() {
+                    self
+                } else {
+                    self.negate_intfinity()
+                }
+            },
+            // inf/inf
+            (Intfinity::PosInfinity, Intfinity::PosInfinity) | (Intfinity::NegInfinity, Intfinity::NegInfinity) => {
+                panic!("indeterminate form: inf / inf")
+            },
+            // -(inf/inf)
+            (Intfinity::PosInfinity, Intfinity::NegInfinity) | (Intfinity::NegInfinity, Intfinity::PosInfinity) => {
+                panic!("indeterminate form: inf / -inf")
+            },
+        }
+    }
+}
 
 
 impl Zero for i32 {
@@ -174,6 +245,12 @@ impl Zero for i32 {
 
     fn is_zero(&self) -> bool {
         *self == 0
+    }
+}
+
+impl Negate for i32 {
+    fn negate(self) -> Self {
+        -self
     }
 }
 
@@ -192,6 +269,12 @@ impl CheckedSub for i32 {
 impl CheckedMul for i32 {
     fn checked_mul(self, other: i32) -> Option<i32> {
         self.checked_mul(other)
+    }
+}
+
+impl CheckedDiv for i32 {
+    fn checked_div(self, other: i32) -> Option<i32> {
+        self.checked_div(other)
     }
 }
 
@@ -229,7 +312,7 @@ mod tests {
         let pos_inf: Intfinity<i32> = Intfinity::PosInfinity;
         let neg_inf = Intfinity::NegInfinity;
 
-        let result = pos_inf + neg_inf;
+        let _result = pos_inf + neg_inf;
     }
 
     #[test]
@@ -300,8 +383,8 @@ mod tests {
         let pos_inf: Intfinity<i32> = Intfinity::PosInfinity;
         let neg_inf: Intfinity<i32> = Intfinity::NegInfinity;
 
-        let result = pos_inf - pos_inf;
-        let result = neg_inf - neg_inf;
+        let _result = pos_inf - pos_inf;
+        let _result = neg_inf - neg_inf;
     }
 
     #[test]
@@ -404,5 +487,138 @@ mod tests {
 
         let result = a * Intfinity::NegInfinity;
         assert_eq!(result, Intfinity::NegInfinity);
+    }
+
+    #[test]
+    fn test_division_finite_values() {
+        let a = Intfinity::new(10);
+        let b = Intfinity::new(2);
+        let result = a / b;
+        assert_eq!(result, Intfinity::Finite(5));
+    }
+
+    #[test]
+    #[should_panic(expected = "division by zero")]
+    fn test_division_by_zero() {
+        let a = Intfinity::new(10);
+        let b = Intfinity::new(0);
+        let _result = a / b;  
+    }
+
+    #[test]
+    fn test_division_by_infinity() {
+        let a = Intfinity::new(10);
+        let result = a / Intfinity::PosInfinity;
+        assert_eq!(result, Intfinity::Finite(0)); 
+
+        let result = a / Intfinity::NegInfinity;
+        assert_eq!(result, Intfinity::Finite(0)); 
+    }
+
+    #[test]
+    fn test_infinity_divided_by_finite_value() {
+        let a = Intfinity::PosInfinity;
+        let b = Intfinity::new(2);
+        let result = a / b;
+        assert_eq!(result, Intfinity::PosInfinity);
+
+        let a = Intfinity::NegInfinity;
+        let result = a / b;
+        assert_eq!(result, Intfinity::NegInfinity);
+
+        let b = Intfinity::new(-2);
+        let result = a / b;
+        assert_eq!(result, Intfinity::PosInfinity);
+
+        let a = Intfinity::PosInfinity;
+        let result = a / b;
+        assert_eq!(result, Intfinity::NegInfinity);
+    }
+
+    #[test]
+    #[should_panic(expected = "indeterminate form: inf / inf")]
+    fn test_infinity_divided_by_infinity_should_panic() {
+        let a: Intfinity<i32> = Intfinity::PosInfinity;
+        let b: Intfinity<i32> = Intfinity::PosInfinity;
+        let _result = a / b; 
+
+        let a: Intfinity<i32> = Intfinity::NegInfinity;
+        let b: Intfinity<i32> = Intfinity::NegInfinity;
+        let _result = a / b;  
+    }
+
+    #[test]
+    #[should_panic(expected = "indeterminate form: inf / -inf")]
+    fn test_pos_infinity_divided_by_neg_infinity_should_panic() {
+        let a: Intfinity<i32> = Intfinity::PosInfinity;
+        let b: Intfinity<i32> = Intfinity::NegInfinity;
+
+        let _result = a / b;  
+        let _result = b / a;  
+    }
+
+    #[test]
+    fn test_finite_divided_by_finite() {
+        let a = Intfinity::new(10);
+        let b = Intfinity::new(2);
+        let result = a / b;
+        assert_eq!(result, Intfinity::Finite(5));
+
+        let a = Intfinity::new(-10);
+        let b = Intfinity::new(2);
+        let result = a / b;
+        assert_eq!(result, Intfinity::Finite(-5));
+
+        let a = Intfinity::new(10);
+        let b = Intfinity::new(-2);
+        let result = a / b;
+        assert_eq!(result, Intfinity::Finite(-5));
+
+        let a = Intfinity::new(-10);
+        let b = Intfinity::new(-2);
+        let result = a / b;
+        assert_eq!(result, Intfinity::Finite(5));
+    }
+
+    #[test]
+    fn test_negate_finite_positive() {
+        let a = Intfinity::Finite(10);
+        let result = a.negate_intfinity();
+        assert_eq!(result, Intfinity::Finite(-10));
+    }
+
+    #[test]
+    fn test_negate_finite_negative() {
+        let a = Intfinity::Finite(-10);
+        let result = a.negate_intfinity();
+        assert_eq!(result, Intfinity::Finite(10));
+    }
+
+    #[test]
+    fn test_negate_pos_infinity() {
+        let a = Intfinity::PosInfinity::<i32>;
+        let result = a.negate_intfinity();
+        assert_eq!(result, Intfinity::NegInfinity);
+    }
+
+    #[test]
+    fn test_negate_neg_infinity() {
+        let a = Intfinity::NegInfinity::<i32>;
+        let result = a.negate_intfinity();
+        assert_eq!(result, Intfinity::PosInfinity);
+    }
+
+    #[test]
+    fn test_negate_zero() {
+        let a = Intfinity::Finite(0);
+        let result = a.negate_intfinity();
+        assert_eq!(result, Intfinity::Finite(0));
+    }
+
+    #[test]
+    fn test_negate_large_value() {
+        let a = Intfinity::Finite(100000);
+        let result = a.negate_intfinity();
+        assert_eq!(result, Intfinity::Finite(-100000));
     }
 }
