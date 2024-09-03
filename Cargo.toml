@@ -2,5 +2,10 @@
 name = "intfinity"
 version = "0.1.0"
 edition = "2021"
+description = "An abstraction over numeric types with infinity implemented."
+repository = "https://github.com/samarthsoup/intfinity"
+license-file = "LICENSE.txt"
+keywords = ["arithmetic", "infinity", "mathematics", "numbers"]
+categories = ["mathematics"]
 
 [dependencies]
