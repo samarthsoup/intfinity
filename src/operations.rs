@@ -3,6 +3,23 @@ use std::ops::{Add,Sub,Mul,Div};
 use crate::intfinity::Intfinity;
 use crate::traits::{CheckedAdd, CheckedSub, CheckedMul, CheckedDiv, Zero, Negate};
 
+/// Implementation of the `Add` trait for `Intfinity`.
+///
+/// This allows for adding two `Intfinity` values together. The addition follows the rules:
+/// - Finite values are added normally, but if the addition results in overflow, underflow; it maps to infinity, negative infinity respectively.
+/// - Adding positive infinity to any value results in positive infinity.
+/// - Adding negative infinity to any value results in negative infinity.
+/// - Adding positive infinity to negative infinity results in a panic, as it is an indeterminate form.
+///
+/// # Examples
+///
+/// ```
+/// use intfinity::Intfinity;
+/// let a = Intfinity::new(5);
+/// let b = Intfinity::PosInfinity;
+/// let result = a + b;
+/// assert_eq!(result, Intfinity::PosInfinity);
+/// ```
 impl<T> Add for Intfinity<T>
 where
     T: Copy + Add<Output = T> + PartialOrd + Zero + CheckedAdd,
@@ -31,6 +48,23 @@ where
     }
 }
 
+/// Implementation of the `Sub` trait for `Intfinity`.
+///
+/// This allows for subtracting one `Intfinity` value from another. The subtraction follows the rules:
+/// - Finite values are subtracted normally, but if the subtraction results in overflow, underflow; it maps to infinity, negative infinity respectively.
+/// - Subtracting a finite value from positive infinity or subtracting negative infinity from a finite value results in positive infinity.
+/// - Subtracting a finite value from negative infinity or subtracting positive infinity from a finite value results in negative infinity.
+/// - Subtracting positive infinity from positive infinity results in a panic, as it is an indeterminate form.
+///
+/// # Examples
+///
+/// ```
+/// use intfinity::Intfinity;
+/// let a = Intfinity::new(10);
+/// let b = Intfinity::new(3);
+/// let result = a - b;
+/// assert_eq!(result, Intfinity::Finite(7));
+/// ```
 impl<T> Sub for Intfinity<T>
 where
     T: Copy + Sub<Output = T> + PartialOrd + Zero + CheckedSub,
@@ -59,6 +93,23 @@ where
     }
 }
 
+/// Implementation of the `Mul` trait for `Intfinity`.
+///
+/// This allows for multiplying two `Intfinity` values. The multiplication follows the rules:
+/// - Finite values are multiplied normally, but if the multiplication results in overflow, underflow; it maps to infinity, negative infinity respectively.
+/// - Multiplying infinity, negative infinity by zero results in a panic as this is considered an indeterminate form.
+/// - Multiplying infinity by a positive finite value results in infinity, while multiplying infinity by a negative finite value results in negative infinity.
+/// - Multiplying negative infinity by a positive finite value results in negative infinity, while multiplying negative infinity by a negative finite value results in infinity.
+///
+/// # Examples
+///
+/// ```
+/// use intfinity::Intfinity;
+/// let a = Intfinity::new(4);
+/// let b = Intfinity::new(5);
+/// let result = a * b;
+/// assert_eq!(result, Intfinity::Finite(20));
+/// ```
 impl<T> Mul for Intfinity<T>
 where
     T: Copy + Mul<Output = T> + PartialOrd + Zero + CheckedMul,
@@ -125,6 +176,25 @@ where
     }
 }
 
+/// Implementation of the `Div` trait for `Intfinity`.
+///
+/// This allows for dividing one `Intfinity` value by another. The division follows the rules:
+/// - Finite values are divided normally, but if the division results in overflow, underflow; it maps to infinity, negative infinity respectively.
+/// - Division by zero results in a panic.
+/// - Dividing infinity by infinity results in a panic, as it is an indeterminate form.
+/// - Dividing infinity by a positive finite value results in infinity, while dividing infinity by a negative finite value results in negative infinity.
+/// - Dividing negative infinity by a positive finite value results in negative infinity, while dividing negative infinity by a negative finite value results in infinity.
+/// - Dividing a finite value by infinty (any sign) results in zero, as implemented for type T.
+///
+/// # Examples
+///
+/// ```
+/// use intfinity::Intfinity;
+/// let a = Intfinity::new(20);
+/// let b = Intfinity::new(5);
+/// let result = a / b;
+/// assert_eq!(result, Intfinity::Finite(4));
+/// ```
 impl<T> Div for Intfinity<T>
 where
     T: Copy + Div<Output = T> + PartialOrd + Zero + CheckedDiv + Negate,
