@@ -9,7 +9,7 @@ use crate::traits::{Zero, Negate};
 /// While it can be used to represent an infinity bound on only one side (e.g., just positive infinity),
 /// the type does not inherently enforce this. Consequently, even if you intend to use only the positive infinity bound,
 /// the negative infinity bound remains accessible and usable, though the behavior may not be strictly guaranteed by the type system.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy)]
 pub enum Intfinity<T> {
     /// A finite value of type T.
     Finite(T),

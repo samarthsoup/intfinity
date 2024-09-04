@@ -244,3 +244,125 @@ where
         }
     }
 }
+
+impl<T> PartialEq for Intfinity<T>
+where
+    T: PartialEq,
+{
+    /// Compares two `Intfinity` values for equality.
+    /// 
+    /// - If both values are `Finite`, their inner values are compared using `PartialEq`.
+    /// - If both values are `PosInfinity`, they are considered equal.
+    /// - If both values are `NegInfinity`, they are considered equal.
+    /// - Otherwise, the values are not equal.
+    ///
+    /// # Example
+    /// ```
+    /// use intfinity::Intfinity;
+    /// let a = Intfinity::new(5);
+    /// let b = Intfinity::new(5);
+    /// let c = Intfinity::PosInfinity;
+    ///
+    /// assert!(a == b);
+    /// assert!(a != c);
+    /// ```
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Intfinity::Finite(a), Intfinity::Finite(b)) => a == b,
+            (Intfinity::PosInfinity, Intfinity::PosInfinity) => true,
+            (Intfinity::NegInfinity, Intfinity::NegInfinity) => true,
+            _ => false,
+        }
+    }
+}
+
+impl<T> Eq for Intfinity<T> where T: Eq {}
+
+impl<T> PartialOrd for Intfinity<T>
+where
+    T: PartialOrd,
+{
+     /// Provides partial ordering for `Intfinity` values.
+    /// 
+    /// - If both values are `Finite`, they are compared using `PartialOrd`.
+    /// - `PosInfinity` is greater than any other value except itself, which is considered equal.
+    /// - `NegInfinity` is less than any other value except itself, which is considered equal.
+    ///
+    /// # Example
+    /// ```
+    /// use intfinity::Intfinity;
+    /// let a = Intfinity::new(5);
+    /// let b = Intfinity::PosInfinity;
+    ///
+    /// assert!(a < b);
+    /// assert!(b > a);
+    /// ```
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (Intfinity::Finite(a), Intfinity::Finite(b)) => a.partial_cmp(b),
+            (Intfinity::PosInfinity, Intfinity::PosInfinity) => Some(std::cmp::Ordering::Equal),
+            (Intfinity::NegInfinity, Intfinity::NegInfinity) => Some(std::cmp::Ordering::Equal),
+            (Intfinity::PosInfinity, _) => Some(std::cmp::Ordering::Greater),
+            (_, Intfinity::PosInfinity) => Some(std::cmp::Ordering::Less),
+            (Intfinity::NegInfinity, _) => Some(std::cmp::Ordering::Less),
+            (_, Intfinity::NegInfinity) => Some(std::cmp::Ordering::Greater),
+        }
+    }
+}
+
+impl<T> Ord for Intfinity<T>
+where
+    T: Ord,
+{
+    /// Provides total ordering for `Intfinity` values by using `partial_cmp` and unwrapping the result.
+    /// This method assumes that `partial_cmp` will never return `None` for valid comparisons.
+    ///
+    /// # Example
+    /// ```
+    /// use intfinity::Intfinity;
+    /// let a = Intfinity::new(5);
+    /// let b = Intfinity::PosInfinity;
+    ///
+    /// assert!(a.cmp(&b) == std::cmp::Ordering::Less);
+    /// ```
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.partial_cmp(other).unwrap()
+    }
+}
+
+impl<T> Intfinity<T>
+where
+    T: PartialEq + PartialOrd,
+{
+    /// Compares two `Intfinity` values in an indeterminate manner.
+    ///
+    /// - If both values are `Finite`, they are compared using `PartialOrd`.
+    /// - If both values are `PosInfinity` or `NegInfinity`, the comparison returns `None`, indicating that they cannot be meaningfully compared.
+    /// - If one value is `PosInfinity` and the other is `NegInfinity`, they are ordered accordingly.
+    /// - Otherwise, infinities are treated as greater or less than finite values.
+    ///
+    /// # Example
+    /// ```
+    /// use intfinity::Intfinity;
+    /// let a: Intfinity<i32> = Intfinity::PosInfinity;
+    /// let b = Intfinity::NegInfinity;
+    ///
+    /// match a.indeterminate_cmp(&b) {
+    ///     Some(ordering) => println!("Ordering: {:?}", ordering),
+    ///     None => println!("Incomparable values"),
+    /// }
+    /// ```
+    pub fn indeterminate_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (Intfinity::Finite(a), Intfinity::Finite(b)) => a.partial_cmp(b),
+            (Intfinity::PosInfinity, Intfinity::PosInfinity) => None,
+            (Intfinity::NegInfinity, Intfinity::NegInfinity) => None,
+            (Intfinity::PosInfinity, Intfinity::NegInfinity) => Some(std::cmp::Ordering::Greater),  
+            (Intfinity::NegInfinity, Intfinity::PosInfinity) => Some(std::cmp::Ordering::Less),  
+            (Intfinity::PosInfinity, _) => Some(std::cmp::Ordering::Greater),
+            (_, Intfinity::PosInfinity) => Some(std::cmp::Ordering::Less),
+            (Intfinity::NegInfinity, _) => Some(std::cmp::Ordering::Less),
+            (_, Intfinity::NegInfinity) => Some(std::cmp::Ordering::Greater),
+        }
+    }
+}
