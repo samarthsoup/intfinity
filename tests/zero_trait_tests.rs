@@ -39,10 +39,13 @@ fn test_neg_infinity_is_not_zero() {
 }
 
 #[test]
-fn test_custom_is_zero_for_integers() {
+fn test_custom_is_zero_for_integers_within_zero_threshold() {
     let near_zero = Intfinity::new(MyInt(1));
     assert!(near_zero.is_zero());  
+}
 
+#[test]
+fn test_custom_is_zero_for_integers_outside_zero_threshold() {
     let far_from_zero = Intfinity::new(MyInt(3));
     assert!(!far_from_zero.is_zero());  
 }
