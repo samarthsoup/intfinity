@@ -9,7 +9,7 @@ pub use intfinity::{DoubleBoundedInfinity, SingleBoundedInfinity};
 
 #[macro_export]
 macro_rules! intfinity {
-    (+inf) => {
+    (inf) => {
         DoubleBoundedInfinity::PosInfinity
     };
     (-inf) => {
@@ -18,16 +18,13 @@ macro_rules! intfinity {
     ($val:expr) => {
         DoubleBoundedInfinity::new($val)
     };
-    (inf) => {
-        SingleBoundedInfinity::Infinity
-    };
     (inf, single_bound) => {
         SingleBoundedInfinity::Infinity
     };
     ($val:expr, single_bound) => {
         SingleBoundedInfinity::new($val)
     };
-    (+inf, double_bound) => {
+    (inf, double_bound) => {
         DoubleBoundedInfinity::PosInfinity
     };
     (-inf, double_bound) => {
