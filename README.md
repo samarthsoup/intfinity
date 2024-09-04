@@ -14,7 +14,7 @@ Add `Intfinity` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-intfinity = "0.1.0"
+intfinity = "0.2.1"
 ```
 
 ## Example Usage
@@ -27,11 +27,7 @@ fn main() {
     
     let result = a + b;
     
-    match result {
-        Intfinity::Finite(value) => println!("Finite: {}", value),
-        Intfinity::PosInfinity => println!("Positive Infinity"),
-        Intfinity::NegInfinity => println!("Negative Infinity"),
-    }
+    println!("result = {}", result);
 }
 ```
 

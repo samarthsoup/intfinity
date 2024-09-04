@@ -19,3 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Introduced implicit `is_zero` by defining the mandatory `zero` function in `Zero` trait.
+
+## [0.2.1] - 2024-09-04
+### Changed
+- Refactored unit tests.
+- Altered example in `README.md`.
