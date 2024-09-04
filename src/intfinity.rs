@@ -10,14 +10,6 @@ pub enum DoubleBoundedInfinity<T> {
     PosInfinity,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum SingleBoundedInfinity<T> {
-    /// A finite value of type T.
-    Finite(T),
-    /// Positive infinity (+inf).
-    Infinity,
-}
-
 impl<T> DoubleBoundedInfinity<T>
 where
     T: Copy,
@@ -101,6 +93,44 @@ where
             DoubleBoundedInfinity::Finite(val) => write!(f, "{}", val),
             DoubleBoundedInfinity::PosInfinity => write!(f, "+infinity"),
             DoubleBoundedInfinity::NegInfinity => write!(f, "-infinity"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum SingleBoundedInfinity<T> {
+    /// A finite value of type T.
+    Finite(T),
+    /// Positive infinity (+inf).
+    Infinity,
+}
+
+impl<T> SingleBoundedInfinity<T>
+where
+    T: Copy,
+{
+    /// Creates a new `SingleBoundedInfinity` instance with a finite value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use intfinity::SingleBoundedInfinity;
+    /// let value = SingleBoundedInfinity::new(42);
+    /// assert_eq!(value, SingleBoundedInfinity::Finite(42));
+    /// ```
+    pub fn new(value: T) -> Self {
+        SingleBoundedInfinity::Finite(value)
+    }
+}
+
+impl<T> std::fmt::Display for SingleBoundedInfinity<T>
+where
+    T: std::fmt::Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SingleBoundedInfinity::Finite(val) => write!(f, "{}", val),
+            SingleBoundedInfinity::Infinity => write!(f, "+infinity"),
         }
     }
 }
