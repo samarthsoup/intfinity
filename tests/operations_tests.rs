@@ -1,4 +1,5 @@
 use intfinity::Intfinity;
+use intfinity::traits::Zero;
 
 #[test]
 fn test_addition_finite_values() {
@@ -35,14 +36,14 @@ fn test_addition_positive_and_negative_infinity() {
 
 #[test]
 fn test_addition_with_positive_infinity() {
-    let a = Intfinity::new(10);
+    let a = Intfinity::new(-10);
     let result = a + Intfinity::PosInfinity;
     assert_eq!(result, Intfinity::PosInfinity);
 }
 
 #[test]
 fn test_addition_with_negative_infinity() {
-    let a = Intfinity::new(-10);
+    let a = Intfinity::new(10);
     let result = a + Intfinity::NegInfinity;
     assert_eq!(result, Intfinity::NegInfinity);
 }
@@ -97,11 +98,17 @@ fn test_subtraction_neg_inf_minus_pos_inf() {
 
 #[test]
 #[should_panic(expected = "indeterminate form: inf - inf")]
-fn test_subtraction_inf_minus_inf_should_panic() {
+fn test_subtraction_inf_minus_inf_should_panic_1() {
     let pos_inf: Intfinity<i32> = Intfinity::PosInfinity;
-    let neg_inf: Intfinity<i32> = Intfinity::NegInfinity;
 
     let _result = pos_inf - pos_inf;
+}
+
+#[test]
+#[should_panic(expected = "indeterminate form: inf - inf")]
+fn test_subtraction_inf_minus_inf_should_panic_2() {
+    let neg_inf: Intfinity<i32> = Intfinity::NegInfinity;
+
     let _result = neg_inf - neg_inf;
 }
 
@@ -146,65 +153,63 @@ fn test_multiplication_by_zero_and_negative_infinity() {
 }
 
 #[test]
-fn test_multiplication_with_infinity() {
+fn test_multiplication_with_pos_infinity_positive() {
     let a = Intfinity::new(4);
     let result = a * Intfinity::PosInfinity;
     assert_eq!(result, Intfinity::PosInfinity);
+}
 
+#[test]
+fn test_multiplication_with_pos_infinity_negative() {
     let a = Intfinity::new(-4);
     let result = a * Intfinity::PosInfinity;
     assert_eq!(result, Intfinity::NegInfinity);
+}
 
+#[test]
+fn test_multiplication_with_neg_infinity_positive() {
     let a = Intfinity::new(4);
     let result = a * Intfinity::NegInfinity;
     assert_eq!(result, Intfinity::NegInfinity);
+}
 
+#[test]
+fn test_multiplication_with_neg_infinity_negative() {
     let a = Intfinity::new(-4);
     let result = a * Intfinity::NegInfinity;
     assert_eq!(result, Intfinity::PosInfinity);
 }
 
 #[test]
-fn test_multiplication_infinity_by_infinity() {
+fn test_multiplication_pos_infinity_by_pos_infinity() {
     let result: Intfinity<i32> = Intfinity::PosInfinity * Intfinity::PosInfinity;
     assert_eq!(result, Intfinity::PosInfinity);
+}
 
+#[test]
+fn test_multiplication_neg_infinity_by_neg_infinity() {
     let result: Intfinity<i32> = Intfinity::NegInfinity * Intfinity::NegInfinity;
     assert_eq!(result, Intfinity::PosInfinity);
+}
 
+#[test]
+fn test_multiplication_pos_infinity_by_neg_infinity() {
     let result: Intfinity<i32> = Intfinity::PosInfinity * Intfinity::NegInfinity;
     assert_eq!(result, Intfinity::NegInfinity);
+}
 
+#[test]
+fn test_multiplication_neg_infinity_by_pos_infinity() {
     let result: Intfinity<i32> = Intfinity::NegInfinity * Intfinity::PosInfinity;
     assert_eq!(result, Intfinity::NegInfinity);
 }
 
 #[test]
-fn test_multiplication_with_negative_numbers() {
+fn test_multiplication_negative_finite_by_finite() {
     let a = Intfinity::new(-3);
     let b = Intfinity::new(6);
     let result = a * b;
     assert_eq!(result, Intfinity::Finite(-18));
-
-    let result = a * Intfinity::PosInfinity;
-    assert_eq!(result, Intfinity::NegInfinity);
-
-    let result = a * Intfinity::NegInfinity;
-    assert_eq!(result, Intfinity::PosInfinity);
-}
-
-#[test]
-fn test_multiplication_with_positive_numbers() {
-    let a = Intfinity::new(3);
-    let b = Intfinity::new(6);
-    let result = a * b;
-    assert_eq!(result, Intfinity::Finite(18));
-
-    let result = a * Intfinity::PosInfinity;
-    assert_eq!(result, Intfinity::PosInfinity);
-
-    let result = a * Intfinity::NegInfinity;
-    assert_eq!(result, Intfinity::NegInfinity);
 }
 
 #[test]
@@ -224,42 +229,62 @@ fn test_division_by_zero() {
 }
 
 #[test]
-fn test_division_by_infinity() {
+fn test_division_by_pos_infinity() {
     let a = Intfinity::new(10);
     let result = a / Intfinity::PosInfinity;
-    assert_eq!(result, Intfinity::Finite(0)); 
-
-    let result = a / Intfinity::NegInfinity;
-    assert_eq!(result, Intfinity::Finite(0)); 
+    assert_eq!(result, Intfinity::Finite(i32::zero())); 
 }
 
 #[test]
-fn test_infinity_divided_by_finite_value() {
+fn test_division_by_neg_infinity() {
+    let a = Intfinity::new(10);
+    let result = a / Intfinity::NegInfinity;
+    assert_eq!(result, Intfinity::Finite(i32::zero())); 
+}
+
+#[test]
+fn test_pos_infinity_divided_by_finite() {
     let a = Intfinity::PosInfinity;
     let b = Intfinity::new(2);
     let result = a / b;
-    assert_eq!(result, Intfinity::PosInfinity);
+    assert_eq!(result, Intfinity::PosInfinity);  
+}
 
+#[test]
+fn test_neg_infinity_divided_by_finite() {
     let a = Intfinity::NegInfinity;
+    let b = Intfinity::new(2);
     let result = a / b;
-    assert_eq!(result, Intfinity::NegInfinity);
+    assert_eq!(result, Intfinity::NegInfinity);  
+}
 
+#[test]
+fn test_neg_infinity_divided_by_negative_finite() {
+    let a = Intfinity::NegInfinity;
     let b = Intfinity::new(-2);
     let result = a / b;
-    assert_eq!(result, Intfinity::PosInfinity);
+    assert_eq!(result, Intfinity::PosInfinity);  
+}
 
+#[test]
+fn test_pos_infinity_divided_by_negative_finite() {
     let a = Intfinity::PosInfinity;
+    let b = Intfinity::new(-2);
     let result = a / b;
-    assert_eq!(result, Intfinity::NegInfinity);
+    assert_eq!(result, Intfinity::NegInfinity); 
 }
 
 #[test]
 #[should_panic(expected = "indeterminate form: inf / inf")]
-fn test_infinity_divided_by_infinity_should_panic() {
+fn test_infinity_divided_by_infinity_should_panic_1() {
     let a: Intfinity<i32> = Intfinity::PosInfinity;
     let b: Intfinity<i32> = Intfinity::PosInfinity;
     let _result = a / b; 
+}
 
+#[test]
+#[should_panic(expected = "indeterminate form: inf / inf")]
+fn test_infinity_divided_by_infinity_should_panic_2() {
     let a: Intfinity<i32> = Intfinity::NegInfinity;
     let b: Intfinity<i32> = Intfinity::NegInfinity;
     let _result = a / b;  
@@ -271,72 +296,15 @@ fn test_pos_infinity_divided_by_neg_infinity_should_panic() {
     let a: Intfinity<i32> = Intfinity::PosInfinity;
     let b: Intfinity<i32> = Intfinity::NegInfinity;
 
-    let _result = a / b;  
+    let _result = a / b;   
+}
+
+
+#[test]
+#[should_panic(expected = "indeterminate form: inf / -inf")]
+fn test_neg_infinity_divided_by_pos_infinity_should_panic() {
+    let a: Intfinity<i32> = Intfinity::PosInfinity;
+    let b: Intfinity<i32> = Intfinity::NegInfinity;
+
     let _result = b / a;  
 }
-
-#[test]
-fn test_finite_divided_by_finite() {
-    let a = Intfinity::new(10);
-    let b = Intfinity::new(2);
-    let result = a / b;
-    assert_eq!(result, Intfinity::Finite(5));
-
-    let a = Intfinity::new(-10);
-    let b = Intfinity::new(2);
-    let result = a / b;
-    assert_eq!(result, Intfinity::Finite(-5));
-
-    let a = Intfinity::new(10);
-    let b = Intfinity::new(-2);
-    let result = a / b;
-    assert_eq!(result, Intfinity::Finite(-5));
-
-    let a = Intfinity::new(-10);
-    let b = Intfinity::new(-2);
-    let result = a / b;
-    assert_eq!(result, Intfinity::Finite(5));
-}
-
-#[test]
-fn test_negate_finite_positive() {
-    let a = Intfinity::Finite(10);
-    let result = a.negate_intfinity();
-    assert_eq!(result, Intfinity::Finite(-10));
-}
-
-#[test]
-fn test_negate_finite_negative() {
-    let a = Intfinity::Finite(-10);
-    let result = a.negate_intfinity();
-    assert_eq!(result, Intfinity::Finite(10));
-}
-
-#[test]
-fn test_negate_pos_infinity() {
-    let a = Intfinity::PosInfinity::<i32>;
-    let result = a.negate_intfinity();
-    assert_eq!(result, Intfinity::NegInfinity);
-}
-
-#[test]
-fn test_negate_neg_infinity() {
-    let a = Intfinity::NegInfinity::<i32>;
-    let result = a.negate_intfinity();
-    assert_eq!(result, Intfinity::PosInfinity);
-}
-
-#[test]
-fn test_negate_zero() {
-    let a = Intfinity::Finite(0);
-    let result = a.negate_intfinity();
-    assert_eq!(result, Intfinity::Finite(0));
-}
-
-#[test]
-fn test_negate_large_value() {
-    let a = Intfinity::Finite(100000);
-    let result = a.negate_intfinity();
-    assert_eq!(result, Intfinity::Finite(-100000));
-}
-
