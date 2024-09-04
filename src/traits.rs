@@ -28,7 +28,9 @@ pub trait Zero {
     /// Returns the zero value of the type.
     fn zero() -> Self;
     /// Checks whether the value is zero.
-    fn is_zero(&self) -> bool;
+    fn is_zero(&self) -> bool where Self:Sized, Self: PartialEq {
+        *self == Self::zero()
+    }
 }
 
 /// A trait for types that support negation.

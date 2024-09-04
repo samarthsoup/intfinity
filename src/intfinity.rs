@@ -39,7 +39,7 @@ where
 
 impl<T> Intfinity<T>
 where
-    T: Zero,
+    T: Zero + PartialEq,
 {
     /// Checks if the `Intfinity` value is zero.
     ///

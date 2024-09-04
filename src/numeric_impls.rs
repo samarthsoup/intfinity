@@ -6,10 +6,6 @@ impl Zero for i8 {
     fn zero() -> Self {
         0
     }
-
-    fn is_zero(&self) -> bool {
-        *self == 0
-    }
 }
 
 /// Implementation of `Negate` trait for `i8`, providing the negation of a value.
@@ -69,10 +65,6 @@ impl Into<i8> for Intfinity<i8> {
 impl Zero for i16 {
     fn zero() -> Self {
         0
-    }
-
-    fn is_zero(&self) -> bool {
-        *self == 0
     }
 }
 
@@ -134,10 +126,6 @@ impl Zero for i32 {
     fn zero() -> Self {
         0
     }
-
-    fn is_zero(&self) -> bool {
-        *self == 0
-    }
 }
 
 /// Implementation of `Negate` trait for `i32`, providing the negation of a value.
@@ -198,10 +186,6 @@ impl Zero for i64 {
     fn zero() -> Self {
         0
     }
-
-    fn is_zero(&self) -> bool {
-        *self == 0
-    }
 }
 
 /// Implementation of `Negate` trait for `i64`, providing the negation of a value.
@@ -261,10 +245,6 @@ impl Into<i64> for Intfinity<i64> {
 impl Zero for i128 {
     fn zero() -> Self {
         0
-    }
-
-    fn is_zero(&self) -> bool {
-        *self == 0
     }
 }
 
