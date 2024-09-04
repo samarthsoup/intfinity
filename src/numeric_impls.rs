@@ -1,5 +1,5 @@
 use crate::traits::{Zero, Negate, CheckedAdd, CheckedSub, CheckedMul, CheckedDiv};
-use crate::DoubleBoundedInfinity;
+use crate::{DoubleBoundedInfinity, SingleBoundedInfinity};
 
 /// Implementation of `Zero` trait for `i8`, providing the zero value and checking if a value is zero.
 impl Zero for i8 {
@@ -297,6 +297,266 @@ impl Into<i128> for DoubleBoundedInfinity<i128> {
             DoubleBoundedInfinity::Finite(val) => val,
             DoubleBoundedInfinity::PosInfinity => i128::MAX, 
             DoubleBoundedInfinity::NegInfinity => i128::MIN,
+        }
+    }
+}
+
+/// Implementation of `Zero` trait for `u8`, providing the zero value and checking if a value is zero.
+impl Zero for u8 {
+    fn zero() -> Self {
+        0
+    }
+}
+
+/// Implementation of `CheckedAdd` trait for `i128`, providing checked addition.
+impl CheckedAdd for u8 {
+    fn checked_add(self, other: u8) -> Option<u8> {
+        self.checked_add(other)
+    }
+}
+
+/// Implementation of `CheckedSub` trait for `u8`, providing checked subtraction.
+impl CheckedSub for u8 {
+    fn checked_sub(self, other: u8) -> Option<u8> {
+        self.checked_sub(other)
+    }
+}
+
+/// Implementation of `CheckedMul` trait for `u8`, providing checked multiplication.
+impl CheckedMul for u8 {
+    fn checked_mul(self, other: u8) -> Option<u8> {
+        self.checked_mul(other)
+    }
+}
+
+/// Implementation of `CheckedDiv` trait for `u8`, providing checked division.
+impl CheckedDiv for u8 {
+    fn checked_div(self, other: u8) -> Option<u8> {
+        self.checked_div(other)
+    }
+}
+
+/// Implementation of `From<u8>` for `SingleBoundedInfinity<u8>`, allowing conversion from `u8` to `SingleBoundedInfinity`.
+impl From<u8> for SingleBoundedInfinity<u8> {
+    fn from(value: u8) -> Self {
+        SingleBoundedInfinity::Finite(value)
+    }
+}
+
+/// Implementation of `Into<u8>` for `SingleBoundedInfinity<u8>`, allowing conversion from `SingleBoundedInfinity` to `u8`.
+impl Into<u8> for SingleBoundedInfinity<u8> {
+    fn into(self) -> u8 {
+        match self {
+            SingleBoundedInfinity::Finite(val) => val,
+            SingleBoundedInfinity::Infinity => u8::MAX, 
+        }
+    }
+}
+
+/// Implementation of `Zero` trait for `u16`, providing the zero value and checking if a value is zero.
+impl Zero for u16 {
+    fn zero() -> Self {
+        0
+    }
+}
+
+/// Implementation of `CheckedAdd` trait for `u16`, providing checked addition.
+impl CheckedAdd for u16 {
+    fn checked_add(self, other: u16) -> Option<u16> {
+        self.checked_add(other)
+    }
+}
+
+/// Implementation of `CheckedSub` trait for `u16`, providing checked subtraction.
+impl CheckedSub for u16 {
+    fn checked_sub(self, other: u16) -> Option<u16> {
+        self.checked_sub(other)
+    }
+}
+
+/// Implementation of `CheckedMul` trait for `u16`, providing checked multiplication.
+impl CheckedMul for u16 {
+    fn checked_mul(self, other: u16) -> Option<u16> {
+        self.checked_mul(other)
+    }
+}
+
+/// Implementation of `CheckedDiv` trait for `u16`, providing checked division.
+impl CheckedDiv for u16 {
+    fn checked_div(self, other: u16) -> Option<u16> {
+        self.checked_div(other)
+    }
+}
+
+/// Implementation of `From<u16>` for `SingleBoundedInfinity<u16>`, allowing conversion from `u16` to `SingleBoundedInfinity`.
+impl From<u16> for SingleBoundedInfinity<u16> {
+    fn from(value: u16) -> Self {
+        SingleBoundedInfinity::Finite(value)
+    }
+}
+
+/// Implementation of `Into<u16>` for `SingleBoundedInfinity<u16>`, allowing conversion from `SingleBoundedInfinity` to `u16`.
+impl Into<u16> for SingleBoundedInfinity<u16> {
+    fn into(self) -> u16 {
+        match self {
+            SingleBoundedInfinity::Finite(val) => val,
+            SingleBoundedInfinity::Infinity => u16::MAX, 
+        }
+    }
+}
+
+/// Implementation of `Zero` trait for `u32`, providing the zero value and checking if a value is zero.
+impl Zero for u32 {
+    fn zero() -> Self {
+        0
+    }
+}
+
+/// Implementation of `CheckedAdd` trait for `u32`, providing checked addition.
+impl CheckedAdd for u32 {
+    fn checked_add(self, other: u32) -> Option<u32> {
+        self.checked_add(other)
+    }
+}
+
+/// Implementation of `CheckedSub` trait for `u32`, providing checked subtraction.
+impl CheckedSub for u32 {
+    fn checked_sub(self, other: u32) -> Option<u32> {
+        self.checked_sub(other)
+    }
+}
+
+/// Implementation of `CheckedMul` trait for `u32`, providing checked multiplication.
+impl CheckedMul for u32 {
+    fn checked_mul(self, other: u32) -> Option<u32> {
+        self.checked_mul(other)
+    }
+}
+
+/// Implementation of `CheckedDiv` trait for `u32`, providing checked division.
+impl CheckedDiv for u32 {
+    fn checked_div(self, other: u32) -> Option<u32> {
+        self.checked_div(other)
+    }
+}
+
+/// Implementation of `From<u32>` for `SingleBoundedInfinity<u32>`, allowing conversion from `u32` to `SingleBoundedInfinity`.
+impl From<u32> for SingleBoundedInfinity<u32> {
+    fn from(value: u32) -> Self {
+        SingleBoundedInfinity::Finite(value)
+    }
+}
+
+/// Implementation of `Into<u32>` for `SingleBoundedInfinity<u32>`, allowing conversion from `SingleBoundedInfinity` to `u32`.
+impl Into<u32> for SingleBoundedInfinity<u32> {
+    fn into(self) -> u32 {
+        match self {
+            SingleBoundedInfinity::Finite(val) => val,
+            SingleBoundedInfinity::Infinity => u32::MAX, 
+        }
+    }
+}
+
+/// Implementation of `Zero` trait for `u64`, providing the zero value and checking if a value is zero.
+impl Zero for u64 {
+    fn zero() -> Self {
+        0
+    }
+}
+
+/// Implementation of `CheckedAdd` trait for `u64`, providing checked addition.
+impl CheckedAdd for u64 {
+    fn checked_add(self, other: u64) -> Option<u64> {
+        self.checked_add(other)
+    }
+}
+
+/// Implementation of `CheckedSub` trait for `u64`, providing checked subtraction.
+impl CheckedSub for u64 {
+    fn checked_sub(self, other: u64) -> Option<u64> {
+        self.checked_sub(other)
+    }
+}
+
+/// Implementation of `CheckedMul` trait for `u64`, providing checked multiplication.
+impl CheckedMul for u64 {
+    fn checked_mul(self, other: u64) -> Option<u64> {
+        self.checked_mul(other)
+    }
+}
+
+/// Implementation of `CheckedDiv` trait for `u64`, providing checked division.
+impl CheckedDiv for u64 {
+    fn checked_div(self, other: u64) -> Option<u64> {
+        self.checked_div(other)
+    }
+}
+
+/// Implementation of `From<u64>` for `SingleBoundedInfinity<u64>`, allowing conversion from `u64` to `SingleBoundedInfinity`.
+impl From<u64> for SingleBoundedInfinity<u64> {
+    fn from(value: u64) -> Self {
+        SingleBoundedInfinity::Finite(value)
+    }
+}
+
+/// Implementation of `Into<u64>` for `SingleBoundedInfinity<u64>`, allowing conversion from `SingleBoundedInfinity` to `u64`.
+impl Into<u64> for SingleBoundedInfinity<u64> {
+    fn into(self) -> u64 {
+        match self {
+            SingleBoundedInfinity::Finite(val) => val,
+            SingleBoundedInfinity::Infinity => u64::MAX, 
+        }
+    }
+}
+
+/// Implementation of `Zero` trait for `u128`, providing the zero value and checking if a value is zero.
+impl Zero for u128 {
+    fn zero() -> Self {
+        0
+    }
+}
+
+/// Implementation of `CheckedAdd` trait for `u128`, providing checked addition.
+impl CheckedAdd for u128 {
+    fn checked_add(self, other: u128) -> Option<u128> {
+        self.checked_add(other)
+    }
+}
+
+/// Implementation of `CheckedSub` trait for `u128`, providing checked subtraction.
+impl CheckedSub for u128 {
+    fn checked_sub(self, other: u128) -> Option<u128> {
+        self.checked_sub(other)
+    }
+}
+
+/// Implementation of `CheckedMul` trait for `u128`, providing checked multiplication.
+impl CheckedMul for u128 {
+    fn checked_mul(self, other: u128) -> Option<u128> {
+        self.checked_mul(other)
+    }
+}
+
+/// Implementation of `CheckedDiv` trait for `u128`, providing checked division.
+impl CheckedDiv for u128 {
+    fn checked_div(self, other: u128) -> Option<u128> {
+        self.checked_div(other)
+    }
+}
+
+/// Implementation of `From<u128>` for `SingleBoundedInfinity<u128>`, allowing conversion from `u128` to `SingleBoundedInfinity`.
+impl From<u128> for SingleBoundedInfinity<u128> {
+    fn from(value: u128) -> Self {
+        SingleBoundedInfinity::Finite(value)
+    }
+}
+
+/// Implementation of `Into<u128>` for `SingleBoundedInfinity<u128>`, allowing conversion from `SingleBoundedInfinity` to `u128`.
+impl Into<u128> for SingleBoundedInfinity<u128> {
+    fn into(self) -> u128 {
+        match self {
+            SingleBoundedInfinity::Finite(val) => val,
+            SingleBoundedInfinity::Infinity => u128::MAX, 
         }
     }
 }
