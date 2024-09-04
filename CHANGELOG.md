@@ -24,3 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored unit tests.
 - Altered example in `README.md`.
+
+## [0.2.2] - 2024-09-04
+### Changed
+- Changed `Ord` and `Eq` traits of `Intfinity` to derived macros rather than custom implementation as they work the same way.

@@ -14,7 +14,7 @@ Add `Intfinity` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-intfinity = "0.2.1"
+intfinity = "0.2.2"
 ```
 
 ## Example Usage
