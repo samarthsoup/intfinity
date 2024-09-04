@@ -176,3 +176,12 @@ pub trait CheckedDiv: Sized {
     /// Performs division, returning `None` if division by zero or overflow occurs.
     fn checked_div(self, other: Self) -> Option<Self>;
 }
+
+pub trait Unsigned {}
+
+impl Unsigned for u8 {}
+impl Unsigned for u16 {}
+impl Unsigned for u32 {}
+impl Unsigned for u64 {}
+impl Unsigned for u128 {}
+impl Unsigned for usize {}

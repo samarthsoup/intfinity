@@ -1,7 +1,7 @@
 use std::ops::{Add,Sub,Mul,Div};
 
-use crate::intfinity::DoubleBoundedInfinity;
-use crate::traits::{CheckedAdd, CheckedSub, CheckedMul, CheckedDiv, Zero, Negate};
+use crate::intfinity::{SingleBoundedInfinity,DoubleBoundedInfinity};
+use crate::traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, Negate, Unsigned, Zero};
 
 /// Implementation of the `Add` trait for `DoubleBoundedInfinity`.
 ///
@@ -281,3 +281,94 @@ where
         }
     }
 }
+
+impl<T> Add for SingleBoundedInfinity<T>
+where
+    T: Copy + Add<Output = T> + PartialOrd + Unsigned + CheckedAdd,
+{
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self::Output {
+        match (self, other) {
+            (Self::Finite(a), Self::Finite(b)) => {
+                match a.checked_add(b) {
+                    Some(sum) => Self::Finite(sum),
+                    None => Self::Infinity, 
+                }
+            }
+            (Self::Infinity, _) | (_, Self::Infinity) => Self::Infinity,
+        }
+    }
+}
+
+impl<T> Sub for SingleBoundedInfinity<T>
+where
+    T: Copy + Sub<Output = T> + PartialOrd + Unsigned + CheckedSub + Zero,
+{
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self::Output {
+        match (self, other) {
+            (Self::Finite(a), Self::Finite(b)) => {
+                match a.checked_sub(b) {
+                    Some(diff) => Self::Finite(diff),
+                    None => Self::Finite(T::zero()), 
+                }
+            }
+            (Self::Infinity, _) => Self::Infinity,
+            (_, Self::Infinity) => Self::Finite(T::zero()), 
+        }
+    }
+}
+
+impl<T> Mul for SingleBoundedInfinity<T>
+where
+    T: Copy + Mul<Output = T> + PartialOrd + Unsigned + CheckedMul + Zero,
+{
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self::Output {
+        match (self, other) {
+            (Self::Finite(a), Self::Finite(b)) => {
+                match a.checked_mul(b) {
+                    Some(prod) => Self::Finite(prod),
+                    None => Self::Infinity, 
+                }
+            },
+            (Self::Infinity, Self::Finite(a)) | (Self::Finite(a), Self::Infinity) => {
+                if a.is_zero() {
+                    panic!("indeterminate form: 0 * inf");
+                } else {
+                    Self::Infinity
+                }
+            },
+            (Self::Infinity, Self::Infinity) => Self::Infinity,
+        }
+    }
+}
+
+impl<T> Div for SingleBoundedInfinity<T>
+where
+    T: Copy + Div<Output = T> + PartialOrd + Unsigned + CheckedDiv + Zero,
+{
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self::Output {
+        match (self, other) {
+            (Self::Finite(_), Self::Finite(b)) if b.is_zero() => {
+                panic!("Division by zero");
+            }
+            (Self::Finite(a), Self::Finite(b)) => {
+                match a.checked_div(b) {
+                    Some(quot) => Self::Finite(quot),
+                    None => Self::Infinity, 
+                }
+            }
+            (Self::Infinity, Self::Finite(_)) => Self::Infinity, 
+            (Self::Finite(_), Self::Infinity) => Self::Finite(T::zero()), 
+            (Self::Infinity, Self::Infinity) => panic!("indeterminate form: inf / inf"), 
+        }
+    }
+}
+
+

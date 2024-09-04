@@ -1,4 +1,4 @@
-use crate::traits::{Zero, Negate};
+use crate::traits::{Zero, Negate, Unsigned};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DoubleBoundedInfinity<T> {
@@ -98,7 +98,7 @@ where
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum SingleBoundedInfinity<T> {
+pub enum SingleBoundedInfinity<T: Unsigned> {
     /// A finite value of type T.
     Finite(T),
     /// Positive infinity (+inf).
@@ -107,7 +107,7 @@ pub enum SingleBoundedInfinity<T> {
 
 impl<T> SingleBoundedInfinity<T>
 where
-    T: Copy,
+    T: Copy + Unsigned,
 {
     /// Creates a new `SingleBoundedInfinity` instance with a finite value.
     ///
@@ -125,7 +125,7 @@ where
 
 impl<T> std::fmt::Display for SingleBoundedInfinity<T>
 where
-    T: std::fmt::Display,
+    T: std::fmt::Display + Unsigned,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
