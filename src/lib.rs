@@ -5,17 +5,17 @@ pub mod intfinity;
 pub mod operations;
 pub mod numeric_impls;
 
-pub use intfinity::Intfinity;
+pub use intfinity::DoubleBoundedInfinity;
 
 #[macro_export]
 macro_rules! intfinity {
     (+inf) => {
-        Intfinity::PosInfinity
+        DoubleBoundedInfinity::PosInfinity
     };
     (-inf) => {
-        Intfinity::NegInfinity
+        DoubleBoundedInfinity::NegInfinity
     };
     ($val:expr) => {
-        Intfinity::new($val)
+        DoubleBoundedInfinity::new($val)
     };
 }

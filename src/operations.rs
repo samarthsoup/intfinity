@@ -1,11 +1,11 @@
 use std::ops::{Add,Sub,Mul,Div};
 
-use crate::intfinity::Intfinity;
+use crate::intfinity::DoubleBoundedInfinity;
 use crate::traits::{CheckedAdd, CheckedSub, CheckedMul, CheckedDiv, Zero, Negate};
 
-/// Implementation of the `Add` trait for `Intfinity`.
+/// Implementation of the `Add` trait for `DoubleBoundedInfinity`.
 ///
-/// This allows for adding two `Intfinity` values together. The addition follows the rules:
+/// This allows for adding two `DoubleBoundedInfinity` values together. The addition follows the rules:
 /// - Finite values are added normally, but if the addition results in overflow, underflow; it maps to infinity, negative infinity respectively.
 /// - Adding positive infinity to any value results in positive infinity.
 /// - Adding negative infinity to any value results in negative infinity.
@@ -14,13 +14,13 @@ use crate::traits::{CheckedAdd, CheckedSub, CheckedMul, CheckedDiv, Zero, Negate
 /// # Examples
 ///
 /// ```
-/// use intfinity::Intfinity;
-/// let a = Intfinity::new(5);
-/// let b = Intfinity::PosInfinity;
+/// use intfinity::DoubleBoundedInfinity;
+/// let a = DoubleBoundedInfinity::new(5);
+/// let b = DoubleBoundedInfinity::PosInfinity;
 /// let result = a + b;
-/// assert_eq!(result, Intfinity::PosInfinity);
+/// assert_eq!(result, DoubleBoundedInfinity::PosInfinity);
 /// ```
-impl<T> Add for Intfinity<T>
+impl<T> Add for DoubleBoundedInfinity<T>
 where
     T: Copy + Add<Output = T> + PartialOrd + Zero + CheckedAdd,
 {
@@ -29,28 +29,28 @@ where
     fn add(self, other: Self) -> Self::Output {
         match (self, other) {
             // finite + finite
-            (Intfinity::Finite(a), Intfinity::Finite(b)) => {
+            (DoubleBoundedInfinity::Finite(a), DoubleBoundedInfinity::Finite(b)) => {
                 a.checked_add(b)
                     .map_or_else(
                         || if a > T::zero() { Self::PosInfinity } else { Self::NegInfinity },
-                        Intfinity::Finite
+                        DoubleBoundedInfinity::Finite
                     )
             },
             // inf + (-inf)
-            (Intfinity::PosInfinity, Intfinity::NegInfinity) | (Intfinity::NegInfinity, Intfinity::PosInfinity) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::NegInfinity) | (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::PosInfinity) => {
                 panic!("indeterminate form: +inf + (-inf)")
             },
             // inf + x = inf
-            (Intfinity::PosInfinity, _) | (_, Intfinity::PosInfinity) => Self::PosInfinity,
+            (DoubleBoundedInfinity::PosInfinity, _) | (_, DoubleBoundedInfinity::PosInfinity) => Self::PosInfinity,
             // -inf + x = -inf
-            (Intfinity::NegInfinity, _) | (_, Intfinity::NegInfinity) => Self::NegInfinity,
+            (DoubleBoundedInfinity::NegInfinity, _) | (_, DoubleBoundedInfinity::NegInfinity) => Self::NegInfinity,
         }
     }
 }
 
-/// Implementation of the `Sub` trait for `Intfinity`.
+/// Implementation of the `Sub` trait for `DoubleBoundedInfinity`.
 ///
-/// This allows for subtracting one `Intfinity` value from another. The subtraction follows the rules:
+/// This allows for subtracting one `DoubleBoundedInfinity` value from another. The subtraction follows the rules:
 /// - Finite values are subtracted normally, but if the subtraction results in overflow, underflow; it maps to infinity, negative infinity respectively.
 /// - Subtracting a finite value from positive infinity or subtracting negative infinity from a finite value results in positive infinity.
 /// - Subtracting a finite value from negative infinity or subtracting positive infinity from a finite value results in negative infinity.
@@ -59,13 +59,13 @@ where
 /// # Examples
 ///
 /// ```
-/// use intfinity::Intfinity;
-/// let a = Intfinity::new(10);
-/// let b = Intfinity::new(3);
+/// use intfinity::DoubleBoundedInfinity;
+/// let a = DoubleBoundedInfinity::new(10);
+/// let b = DoubleBoundedInfinity::new(3);
 /// let result = a - b;
-/// assert_eq!(result, Intfinity::Finite(7));
+/// assert_eq!(result, DoubleBoundedInfinity::Finite(7));
 /// ```
-impl<T> Sub for Intfinity<T>
+impl<T> Sub for DoubleBoundedInfinity<T>
 where
     T: Copy + Sub<Output = T> + PartialOrd + Zero + CheckedSub,
 {
@@ -74,28 +74,28 @@ where
     fn sub(self, other: Self) -> Self::Output {
         match (self, other) {
             // finite - finite
-            (Intfinity::Finite(a), Intfinity::Finite(b)) => {
+            (DoubleBoundedInfinity::Finite(a), DoubleBoundedInfinity::Finite(b)) => {
                 a.checked_sub(b)
                     .map_or_else(
                         || if a > T::zero() { Self::PosInfinity } else { Self::NegInfinity },
-                        Intfinity::Finite
+                        DoubleBoundedInfinity::Finite
                     )
             },
             // inf - inf
-            (Intfinity::PosInfinity, Intfinity::PosInfinity) | (Intfinity::NegInfinity, Intfinity::NegInfinity) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::PosInfinity) | (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::NegInfinity) => {
                 panic!("indeterminate form: inf - inf")
             },
             // inf - x || x - (-inf)
-            (Intfinity::PosInfinity, _) | (_, Intfinity::NegInfinity) => Self::PosInfinity,
+            (DoubleBoundedInfinity::PosInfinity, _) | (_, DoubleBoundedInfinity::NegInfinity) => Self::PosInfinity,
             // -inf - x || x - inf
-            (Intfinity::NegInfinity, _) | (_, Intfinity::PosInfinity) => Self::NegInfinity,
+            (DoubleBoundedInfinity::NegInfinity, _) | (_, DoubleBoundedInfinity::PosInfinity) => Self::NegInfinity,
         }
     }
 }
 
-/// Implementation of the `Mul` trait for `Intfinity`.
+/// Implementation of the `Mul` trait for `DoubleBoundedInfinity`.
 ///
-/// This allows for multiplying two `Intfinity` values. The multiplication follows the rules:
+/// This allows for multiplying two `DoubleBoundedInfinity` values. The multiplication follows the rules:
 /// - Finite values are multiplied normally, but if the multiplication results in overflow, underflow; it maps to infinity, negative infinity respectively.
 /// - Multiplying infinity, negative infinity by zero results in a panic as this is considered an indeterminate form.
 /// - Multiplying infinity by a positive finite value results in infinity, while multiplying infinity by a negative finite value results in negative infinity.
@@ -104,13 +104,13 @@ where
 /// # Examples
 ///
 /// ```
-/// use intfinity::Intfinity;
-/// let a = Intfinity::new(4);
-/// let b = Intfinity::new(5);
+/// use intfinity::DoubleBoundedInfinity;
+/// let a = DoubleBoundedInfinity::new(4);
+/// let b = DoubleBoundedInfinity::new(5);
 /// let result = a * b;
-/// assert_eq!(result, Intfinity::Finite(20));
+/// assert_eq!(result, DoubleBoundedInfinity::Finite(20));
 /// ```
-impl<T> Mul for Intfinity<T>
+impl<T> Mul for DoubleBoundedInfinity<T>
 where
     T: Copy + Mul<Output = T> + PartialOrd + Zero + CheckedMul,
 {
@@ -119,7 +119,7 @@ where
     fn mul(self, other: Self) -> Self::Output {
         match (self, other) {
             // finite * finite
-            (Intfinity::Finite(a), Intfinity::Finite(b)) => {
+            (DoubleBoundedInfinity::Finite(a), DoubleBoundedInfinity::Finite(b)) => {
                 a.checked_mul(b)
                     .map_or_else(
                         || {
@@ -129,7 +129,7 @@ where
                                 Self::NegInfinity
                             }
                         },
-                        Intfinity::Finite,
+                        DoubleBoundedInfinity::Finite,
                     )
             },
             /*
@@ -139,7 +139,7 @@ where
                     -inf, x < 0
                 }
             */
-            (Intfinity::PosInfinity, Intfinity::Finite(a)) | (Intfinity::Finite(a), Intfinity::PosInfinity) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::Finite(a)) | (DoubleBoundedInfinity::Finite(a), DoubleBoundedInfinity::PosInfinity) => {
                 if a.is_zero() {
                     panic!("indefinite form: 0 * inf") 
                 } else if a > T::zero() {
@@ -155,7 +155,7 @@ where
                     +inf, x < 0
                 }
             */
-            (Intfinity::NegInfinity, Intfinity::Finite(a)) | (Intfinity::Finite(a), Intfinity::NegInfinity) => {
+            (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::Finite(a)) | (DoubleBoundedInfinity::Finite(a), DoubleBoundedInfinity::NegInfinity) => {
                 if a.is_zero() {
                     panic!("indefinite form: 0 * -inf")  
                 } else if a > T::zero() {
@@ -165,20 +165,20 @@ where
                 }
             },
             // inf * inf || -inf * (-inf)
-            (Intfinity::PosInfinity, Intfinity::PosInfinity) | (Intfinity::NegInfinity, Intfinity::NegInfinity) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::PosInfinity) | (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::NegInfinity) => {
                 Self::PosInfinity
             },
             // -inf * inf
-            (Intfinity::PosInfinity, Intfinity::NegInfinity) | (Intfinity::NegInfinity, Intfinity::PosInfinity) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::NegInfinity) | (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::PosInfinity) => {
                 Self::NegInfinity
             },
         }
     }
 }
 
-/// Implementation of the `Div` trait for `Intfinity`.
+/// Implementation of the `Div` trait for `DoubleBoundedInfinity`.
 ///
-/// This allows for dividing one `Intfinity` value by another. The division follows the rules:
+/// This allows for dividing one `DoubleBoundedInfinity` value by another. The division follows the rules:
 /// - Finite values are divided normally, but if the division results in overflow, underflow; it maps to infinity, negative infinity respectively.
 /// - Division by zero results in a panic.
 /// - Dividing infinity by infinity results in a panic, as it is an indeterminate form.
@@ -189,13 +189,13 @@ where
 /// # Examples
 ///
 /// ```
-/// use intfinity::Intfinity;
-/// let a = Intfinity::new(20);
-/// let b = Intfinity::new(5);
+/// use intfinity::DoubleBoundedInfinity;
+/// let a = DoubleBoundedInfinity::new(20);
+/// let b = DoubleBoundedInfinity::new(5);
 /// let result = a / b;
-/// assert_eq!(result, Intfinity::Finite(4));
+/// assert_eq!(result, DoubleBoundedInfinity::Finite(4));
 /// ```
-impl<T> Div for Intfinity<T>
+impl<T> Div for DoubleBoundedInfinity<T>
 where
     T: Copy + Div<Output = T> + PartialOrd + Zero + CheckedDiv + Negate,
 {
@@ -204,7 +204,7 @@ where
     fn div(self, other: Self) -> Self::Output {
         match (self, other) {
             // finite/finite
-            (Intfinity::Finite(a), Intfinity::Finite(b)) => {
+            (DoubleBoundedInfinity::Finite(a), DoubleBoundedInfinity::Finite(b)) => {
                 if b.is_zero() {
                     panic!("division by zero")
                 } else {
@@ -215,41 +215,41 @@ where
                             } else {
                                 Self::NegInfinity
                             },
-                            Intfinity::Finite
+                            DoubleBoundedInfinity::Finite
                         )
                 }
             },
             // x/inf
-            (Intfinity::Finite(_), Intfinity::PosInfinity) | (Intfinity::Finite(_), Intfinity::NegInfinity) => {
-                Intfinity::Finite(T::zero())
+            (DoubleBoundedInfinity::Finite(_), DoubleBoundedInfinity::PosInfinity) | (DoubleBoundedInfinity::Finite(_), DoubleBoundedInfinity::NegInfinity) => {
+                DoubleBoundedInfinity::Finite(T::zero())
             },
             // inf/x
-            (Intfinity::PosInfinity, Intfinity::Finite(a)) | (Intfinity::NegInfinity, Intfinity::Finite(a)) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::Finite(a)) | (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::Finite(a)) => {
                 if a.is_zero() {
                     panic!("division by zero")
                 } else if a > T::zero() {
                     self
                 } else {
-                    self.negate_intfinity()
+                    self.negate_double_bounded_infinity()
                 }
             },
             // inf/inf
-            (Intfinity::PosInfinity, Intfinity::PosInfinity) | (Intfinity::NegInfinity, Intfinity::NegInfinity) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::PosInfinity) | (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::NegInfinity) => {
                 panic!("indeterminate form: inf / inf")
             },
             // -(inf/inf)
-            (Intfinity::PosInfinity, Intfinity::NegInfinity) | (Intfinity::NegInfinity, Intfinity::PosInfinity) => {
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::NegInfinity) | (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::PosInfinity) => {
                 panic!("indeterminate form: inf / -inf")
             },
         }
     }
 }
 
-impl<T> Intfinity<T>
+impl<T> DoubleBoundedInfinity<T>
 where
     T: PartialEq + PartialOrd,
 {
-    /// Compares two `Intfinity` values in an indeterminate manner.
+    /// Compares two `DoubleBoundedInfinity` values in an indeterminate manner.
     ///
     /// - If both values are `Finite`, they are compared using `PartialOrd`.
     /// - If both values are `PosInfinity` or `NegInfinity`, the comparison returns `None`, indicating that they cannot be meaningfully compared.
@@ -258,9 +258,9 @@ where
     ///
     /// # Example
     /// ```
-    /// use intfinity::Intfinity;
-    /// let a: Intfinity<i32> = Intfinity::PosInfinity;
-    /// let b = Intfinity::NegInfinity;
+    /// use intfinity::DoubleBoundedInfinity;
+    /// let a: DoubleBoundedInfinity<i32> = DoubleBoundedInfinity::PosInfinity;
+    /// let b = DoubleBoundedInfinity::NegInfinity;
     ///
     /// match a.indeterminate_cmp(&b) {
     ///     Some(ordering) => println!("Ordering: {:?}", ordering),
@@ -269,15 +269,15 @@ where
     /// ```
     pub fn indeterminate_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         match (self, other) {
-            (Intfinity::Finite(a), Intfinity::Finite(b)) => a.partial_cmp(b),
-            (Intfinity::PosInfinity, Intfinity::PosInfinity) => None,
-            (Intfinity::NegInfinity, Intfinity::NegInfinity) => None,
-            (Intfinity::PosInfinity, Intfinity::NegInfinity) => Some(std::cmp::Ordering::Greater),  
-            (Intfinity::NegInfinity, Intfinity::PosInfinity) => Some(std::cmp::Ordering::Less),  
-            (Intfinity::PosInfinity, _) => Some(std::cmp::Ordering::Greater),
-            (_, Intfinity::PosInfinity) => Some(std::cmp::Ordering::Less),
-            (Intfinity::NegInfinity, _) => Some(std::cmp::Ordering::Less),
-            (_, Intfinity::NegInfinity) => Some(std::cmp::Ordering::Greater),
+            (DoubleBoundedInfinity::Finite(a), DoubleBoundedInfinity::Finite(b)) => a.partial_cmp(b),
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::PosInfinity) => None,
+            (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::NegInfinity) => None,
+            (DoubleBoundedInfinity::PosInfinity, DoubleBoundedInfinity::NegInfinity) => Some(std::cmp::Ordering::Greater),  
+            (DoubleBoundedInfinity::NegInfinity, DoubleBoundedInfinity::PosInfinity) => Some(std::cmp::Ordering::Less),  
+            (DoubleBoundedInfinity::PosInfinity, _) => Some(std::cmp::Ordering::Greater),
+            (_, DoubleBoundedInfinity::PosInfinity) => Some(std::cmp::Ordering::Less),
+            (DoubleBoundedInfinity::NegInfinity, _) => Some(std::cmp::Ordering::Less),
+            (_, DoubleBoundedInfinity::NegInfinity) => Some(std::cmp::Ordering::Greater),
         }
     }
 }

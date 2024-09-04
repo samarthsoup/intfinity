@@ -1,5 +1,5 @@
 use crate::traits::{Zero, Negate, CheckedAdd, CheckedSub, CheckedMul, CheckedDiv};
-use crate::Intfinity;
+use crate::DoubleBoundedInfinity;
 
 /// Implementation of `Zero` trait for `i8`, providing the zero value and checking if a value is zero.
 impl Zero for i8 {
@@ -43,20 +43,20 @@ impl CheckedDiv for i8 {
     }
 }
 
-/// Implementation of `From<i8>` for `Intfinity<i8>`, allowing conversion from `i8` to `Intfinity`.
-impl From<i8> for Intfinity<i8> {
+/// Implementation of `From<i8>` for `DoubleBoundedInfinity<i8>`, allowing conversion from `i8` to `DoubleBoundedInfinity`.
+impl From<i8> for DoubleBoundedInfinity<i8> {
     fn from(value: i8) -> Self {
-        Intfinity::Finite(value)
+        DoubleBoundedInfinity::Finite(value)
     }
 }
 
-/// Implementation of `Into<i8>` for `Intfinity<i8>`, allowing conversion from `Intfinity` to `i8`.
-impl Into<i8> for Intfinity<i8> {
+/// Implementation of `Into<i8>` for `DoubleBoundedInfinity<i8>`, allowing conversion from `DoubleBoundedInfinity` to `i8`.
+impl Into<i8> for DoubleBoundedInfinity<i8> {
     fn into(self) -> i8 {
         match self {
-            Intfinity::Finite(val) => val,
-            Intfinity::PosInfinity => i8::MAX, 
-            Intfinity::NegInfinity => i8::MIN,
+            DoubleBoundedInfinity::Finite(val) => val,
+            DoubleBoundedInfinity::PosInfinity => i8::MAX, 
+            DoubleBoundedInfinity::NegInfinity => i8::MIN,
         }
     }
 }
@@ -103,20 +103,20 @@ impl CheckedDiv for i16 {
     }
 }
 
-/// Implementation of `From<i16>` for `Intfinity<i16>`, allowing conversion from `i16` to `Intfinity`.
-impl From<i16> for Intfinity<i16> {
+/// Implementation of `From<i16>` for `DoubleBoundedInfinity<i16>`, allowing conversion from `i16` to `DoubleBoundedInfinity`.
+impl From<i16> for DoubleBoundedInfinity<i16> {
     fn from(value: i16) -> Self {
-        Intfinity::Finite(value)
+        DoubleBoundedInfinity::Finite(value)
     }
 }
 
-/// Implementation of `Into<i16>` for `Intfinity<i16>`, allowing conversion from `Intfinity` to `i16`.
-impl Into<i16> for Intfinity<i16> {
+/// Implementation of `Into<i16>` for `DoubleBoundedInfinity<i16>`, allowing conversion from `DoubleBoundedInfinity` to `i16`.
+impl Into<i16> for DoubleBoundedInfinity<i16> {
     fn into(self) -> i16 {
         match self {
-            Intfinity::Finite(val) => val,
-            Intfinity::PosInfinity => i16::MAX, 
-            Intfinity::NegInfinity => i16::MIN,
+            DoubleBoundedInfinity::Finite(val) => val,
+            DoubleBoundedInfinity::PosInfinity => i16::MAX, 
+            DoubleBoundedInfinity::NegInfinity => i16::MIN,
         }
     }
 }
@@ -163,20 +163,20 @@ impl CheckedDiv for i32 {
     }
 }
 
-/// Implementation of `From<i32>` for `Intfinity<i32>`, allowing conversion from `i32` to `Intfinity`.
-impl From<i32> for Intfinity<i32> {
+/// Implementation of `From<i32>` for `DoubleBoundedInfinity<i32>`, allowing conversion from `i32` to `DoubleBoundedInfinity`.
+impl From<i32> for DoubleBoundedInfinity<i32> {
     fn from(value: i32) -> Self {
-        Intfinity::Finite(value)
+        DoubleBoundedInfinity::Finite(value)
     }
 }
 
-/// Implementation of `Into<i32>` for `Intfinity<i32>`, allowing conversion from `Intfinity` to `i32`.
-impl Into<i32> for Intfinity<i32> {
+/// Implementation of `Into<i32>` for `DoubleBoundedInfinity<i32>`, allowing conversion from `DoubleBoundedInfinity` to `i32`.
+impl Into<i32> for DoubleBoundedInfinity<i32> {
     fn into(self) -> i32 {
         match self {
-            Intfinity::Finite(val) => val,
-            Intfinity::PosInfinity => i32::MAX, 
-            Intfinity::NegInfinity => i32::MIN,
+            DoubleBoundedInfinity::Finite(val) => val,
+            DoubleBoundedInfinity::PosInfinity => i32::MAX, 
+            DoubleBoundedInfinity::NegInfinity => i32::MIN,
         }
     }
 }
@@ -223,20 +223,20 @@ impl CheckedDiv for i64 {
     }
 }
 
-/// Implementation of `From<i64>` for `Intfinity<i64>`, allowing conversion from `i64` to `Intfinity`.
-impl From<i64> for Intfinity<i64> {
+/// Implementation of `From<i64>` for `DoubleBoundedInfinity<i64>`, allowing conversion from `i64` to `DoubleBoundedInfinity`.
+impl From<i64> for DoubleBoundedInfinity<i64> {
     fn from(value: i64) -> Self {
-        Intfinity::Finite(value)
+        DoubleBoundedInfinity::Finite(value)
     }
 }
 
-/// Implementation of `Into<i64>` for `Intfinity<i64>`, allowing conversion from `Intfinity` to `i64`.
-impl Into<i64> for Intfinity<i64> {
+/// Implementation of `Into<i64>` for `DoubleBoundedInfinity<i64>`, allowing conversion from `DoubleBoundedInfinity` to `i64`.
+impl Into<i64> for DoubleBoundedInfinity<i64> {
     fn into(self) -> i64 {
         match self {
-            Intfinity::Finite(val) => val,
-            Intfinity::PosInfinity => i64::MAX, 
-            Intfinity::NegInfinity => i64::MIN,
+            DoubleBoundedInfinity::Finite(val) => val,
+            DoubleBoundedInfinity::PosInfinity => i64::MAX, 
+            DoubleBoundedInfinity::NegInfinity => i64::MIN,
         }
     }
 }
@@ -283,20 +283,20 @@ impl CheckedDiv for i128 {
     }
 }
 
-/// Implementation of `From<i128>` for `Intfinity<i128>`, allowing conversion from `i128` to `Intfinity`.
-impl From<i128> for Intfinity<i128> {
+/// Implementation of `From<i128>` for `DoubleBoundedInfinity<i128>`, allowing conversion from `i128` to `DoubleBoundedInfinity`.
+impl From<i128> for DoubleBoundedInfinity<i128> {
     fn from(value: i128) -> Self {
-        Intfinity::Finite(value)
+        DoubleBoundedInfinity::Finite(value)
     }
 }
 
-/// Implementation of `Into<i128>` for `Intfinity<i128>`, allowing conversion from `Intfinity` to `i128`.
-impl Into<i128> for Intfinity<i128> {
+/// Implementation of `Into<i128>` for `DoubleBoundedInfinity<i128>`, allowing conversion from `DoubleBoundedInfinity` to `i128`.
+impl Into<i128> for DoubleBoundedInfinity<i128> {
     fn into(self) -> i128 {
         match self {
-            Intfinity::Finite(val) => val,
-            Intfinity::PosInfinity => i128::MAX, 
-            Intfinity::NegInfinity => i128::MIN,
+            DoubleBoundedInfinity::Finite(val) => val,
+            DoubleBoundedInfinity::PosInfinity => i128::MAX, 
+            DoubleBoundedInfinity::NegInfinity => i128::MIN,
         }
     }
 }
