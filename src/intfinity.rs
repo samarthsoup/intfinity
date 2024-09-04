@@ -92,3 +92,16 @@ where
         }
     }
 }
+
+impl<T> std::fmt::Display for Intfinity<T>
+where
+    T: std::fmt::Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Intfinity::Finite(val) => write!(f, "{}", val),
+            Intfinity::PosInfinity => write!(f, "+infinity"),
+            Intfinity::NegInfinity => write!(f, "-infinity"),
+        }
+    }
+}
