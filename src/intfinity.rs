@@ -69,6 +69,18 @@ where
     }
 }
 
+impl<T> SingleInfiniteNumber<T>
+where
+    T: Zero + PartialEq + Unsigned,
+{
+    pub fn is_zero(&self) -> bool {
+        match self {
+            SingleInfiniteNumber::Finite(val) => val.is_zero(),
+            _ => false,
+        }
+    }
+}
+
 impl<T> std::fmt::Display for SingleInfiniteNumber<T>
 where
     T: std::fmt::Display + Unsigned,
