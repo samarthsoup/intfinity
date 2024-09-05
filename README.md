@@ -1,12 +1,12 @@
-# Intfinity
+# intfinity
 
-`Intfinity` is a Rust crate that provides a generic type for representing and working with both finite and infinite numeric values. It supports operations that automatically handle overflow and underflow, mapping them to positive or negative infinity as appropriate.
+[`intfinity`](https://github.com/samarthsoup/intfinity/blob/master/src/intfinity.rs) is a Rust crate that provides a generic type for representing and working with both finite and infinite numeric values. It supports operations that automatically handle overflow and underflow, mapping them to positive or negative infinity as appropriate.
 
 ## Features
 
 - **Generic Infinity Representation**: Define numeric types that can represent positive and negative infinity alongside finite values.
 - **Checked Arithmetic**: Implementations of `Add`, `Sub`, `Mul`, and `Div` traits with built-in overflow and underflow detection.
-- **Custom Traits**: Traits like `Zero`, `Negate`, `CheckedAdd`, `CheckedSub`, `CheckedMul`, and `CheckedDiv` allow for extensibility to custom numeric types.
+- **Custom Traits**: Traits like [`Zero`](https://github.com/samarthsoup/intfinity/blob/27a937e3e4aea0197783b634083f06d0a3fae59f/src/traits.rs#L1), [`Negate`](https://github.com/samarthsoup/intfinity/blob/27a937e3e4aea0197783b634083f06d0a3fae59f/src/traits.rs#L8), [Unsigned](https://github.com/samarthsoup/intfinity/blob/27a937e3e4aea0197783b634083f06d0a3fae59f/src/traits.rs#L30),[`CheckedAdd`](https://github.com/samarthsoup/intfinity/blob/27a937e3e4aea0197783b634083f06d0a3fae59f/src/traits.rs#L13), [`CheckedSub`](https://github.com/samarthsoup/intfinity/blob/27a937e3e4aea0197783b634083f06d0a3fae59f/src/traits.rs#L17), [`CheckedMul`](https://github.com/samarthsoup/intfinity/blob/27a937e3e4aea0197783b634083f06d0a3fae59f/src/traits.rs#L21), and [`CheckedDiv`](https://github.com/samarthsoup/intfinity/blob/27a937e3e4aea0197783b634083f06d0a3fae59f/src/traits.rs#L26) allow for extensibility to custom numeric types.
 
 ## Getting Started
 
