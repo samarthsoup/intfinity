@@ -14,7 +14,7 @@ Add `Intfinity` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-intfinity = "0.3.0"
+intfinity = "0.3.1"
 ```
 
 ## Example Usage
@@ -27,7 +27,7 @@ fn main() {
     
     let result = a + b;
     
-    println!("result = {}", result);
+    println!("result = {}", result); // stdout will be "+infinity"
 }
 ```
 

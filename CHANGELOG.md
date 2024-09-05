@@ -35,3 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Replaced
 - `Intfinity` enum is now renamed as `DoubleInfiniteNumber`.
+
+## [0.3.1] - 2024-09-06
+### Added
+- The doctor's report just came in, `intfinity` is now `no-std`!
