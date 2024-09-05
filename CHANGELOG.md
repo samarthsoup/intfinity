@@ -28,3 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.2] - 2024-09-04
 ### Changed
 - Changed `Ord` and `Eq` traits of `Intfinity` to derived macros rather than custom implementation as they work the same way.
+
+## [0.3.0] - 2024-09-05
+### Added
+- `SingleInfiniteNumber` and `DoubleInfiniteNumber` enums for safe handling of numerical types with infinity on one side or both.
+
+### Replaced
+- `Intfinity` enum is now renamed as `DoubleInfiniteNumber`.

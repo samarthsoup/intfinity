@@ -14,16 +14,16 @@ Add `Intfinity` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-intfinity = "0.2.2"
+intfinity = "0.3.0"
 ```
 
 ## Example Usage
 ```
-use intfinity::Intfinity;
+use intfinity::DoubleInfiniteNumber;
 
 fn main() {
-    let a = Intfinity::new(42);
-    let b = Intfinity::PosInfinity;
+    let a = DoubleInfiniteNumber::new(42);
+    let b = DoubleInfiniteNumber::PosInfinity;
     
     let result = a + b;
     
