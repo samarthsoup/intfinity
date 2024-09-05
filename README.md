@@ -10,7 +10,7 @@
 
 ## Getting Started
 
-Add `Intfinity` to your `Cargo.toml`:
+Add `intfinity` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
