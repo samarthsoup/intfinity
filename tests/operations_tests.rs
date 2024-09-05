@@ -1,4 +1,4 @@
-use intfinity::DoubleInfiniteNumber;
+use intfinity::{SingleInfiniteNumber,DoubleInfiniteNumber};
 use intfinity::traits::Zero;
 
 #[test]
@@ -307,4 +307,93 @@ fn test_neg_infinity_divided_by_pos_infinity_should_panic() {
     let b: DoubleInfiniteNumber<i32> = DoubleInfiniteNumber::NegInfinity;
 
     let _result = b / a;  
+}
+
+#[test]
+fn test_addition_finite_values_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(10);
+    let b = SingleInfiniteNumber::new(20);
+    let result = a + b;
+    assert_eq!(result, SingleInfiniteNumber::Finite(30));
+}
+
+#[test]
+fn test_addition_with_overflow_single() {
+    let a = SingleInfiniteNumber::new(u32::MAX);
+    let b = SingleInfiniteNumber::new(1);
+    let result = a + b;
+    assert_eq!(result, SingleInfiniteNumber::Infinity);
+}
+
+#[test]
+fn test_addition_with_infinity_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(10);
+    let result = a + SingleInfiniteNumber::Infinity;
+    assert_eq!(result, SingleInfiniteNumber::Infinity);
+}
+
+#[test]
+fn test_subtraction_finite_values_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(20);
+    let b = SingleInfiniteNumber::new(10);
+    let result = a - b;
+    assert_eq!(result, SingleInfiniteNumber::Finite(10));
+}
+
+#[test]
+fn test_subtraction_with_infinity_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(10);
+    let result = a - SingleInfiniteNumber::Infinity;
+    assert_eq!(result, SingleInfiniteNumber::Finite(0));
+}
+
+#[test]
+fn test_multiplication_finite_values_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(4);
+    let b = SingleInfiniteNumber::new(5);
+    let result = a * b;
+    assert_eq!(result, SingleInfiniteNumber::Finite(20));
+}
+
+#[test]
+fn test_multiplication_with_infinity_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(4);
+    let result = a * SingleInfiniteNumber::Infinity;
+    assert_eq!(result, SingleInfiniteNumber::Infinity);
+}
+
+#[test]
+#[should_panic(expected = "indeterminate form: 0 * inf")]
+fn test_multiplication_by_zero_and_infinity_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(0);
+    let _result = a * SingleInfiniteNumber::Infinity;
+}
+
+#[test]
+fn test_division_finite_values_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(10);
+    let b = SingleInfiniteNumber::new(2);
+    let result = a / b;
+    assert_eq!(result, SingleInfiniteNumber::Finite(5));
+}
+
+#[test]
+#[should_panic(expected = "division by zero")]
+fn test_division_by_zero_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(10);
+    let _result = a / SingleInfiniteNumber::new(0);
+}
+
+#[test]
+fn test_division_by_infinity_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::new(10);
+    let result = a / SingleInfiniteNumber::Infinity;
+    assert_eq!(result, SingleInfiniteNumber::Finite(0));
+}
+
+#[test]
+#[should_panic(expected = "indeterminate form: inf / inf")]
+fn test_infinity_divided_by_infinity_should_panic_single() {
+    let a: SingleInfiniteNumber<u32> = SingleInfiniteNumber::Infinity;
+    let _result = a / SingleInfiniteNumber::Infinity;
 }
