@@ -1,43 +1,43 @@
-use intfinity::DoubleBoundedInfinity;
+use intfinity::DoubleInfiniteNumber;
 
 #[test]
 fn test_negate_finite_positive() {
-    let a = DoubleBoundedInfinity::Finite(10);
+    let a = DoubleInfiniteNumber::Finite(10);
     let result = a.negate_double_bounded_infinity();
-    assert_eq!(result, DoubleBoundedInfinity::Finite(-10));
+    assert_eq!(result, DoubleInfiniteNumber::Finite(-10));
 }
 
 #[test]
 fn test_negate_finite_negative() {
-    let a = DoubleBoundedInfinity::Finite(-10);
+    let a = DoubleInfiniteNumber::Finite(-10);
     let result = a.negate_double_bounded_infinity();
-    assert_eq!(result, DoubleBoundedInfinity::Finite(10));
+    assert_eq!(result, DoubleInfiniteNumber::Finite(10));
 }
 
 #[test]
 fn test_negate_pos_infinity() {
-    let a = DoubleBoundedInfinity::PosInfinity::<i32>;
+    let a = DoubleInfiniteNumber::PosInfinity::<i32>;
     let result = a.negate_double_bounded_infinity();
-    assert_eq!(result, DoubleBoundedInfinity::NegInfinity);
+    assert_eq!(result, DoubleInfiniteNumber::NegInfinity);
 }
 
 #[test]
 fn test_negate_neg_infinity() {
-    let a = DoubleBoundedInfinity::NegInfinity::<i32>;
+    let a = DoubleInfiniteNumber::NegInfinity::<i32>;
     let result = a.negate_double_bounded_infinity();
-    assert_eq!(result, DoubleBoundedInfinity::PosInfinity);
+    assert_eq!(result, DoubleInfiniteNumber::PosInfinity);
 }
 
 #[test]
 fn test_negate_zero() {
-    let a = DoubleBoundedInfinity::Finite(0);
+    let a = DoubleInfiniteNumber::Finite(0);
     let result = a.negate_double_bounded_infinity();
-    assert_eq!(result, DoubleBoundedInfinity::Finite(0));
+    assert_eq!(result, DoubleInfiniteNumber::Finite(0));
 }
 
 #[test]
 fn test_negate_large_value() {
-    let a = DoubleBoundedInfinity::Finite(100000);
+    let a = DoubleInfiniteNumber::Finite(100000);
     let result = a.negate_double_bounded_infinity();
-    assert_eq!(result, DoubleBoundedInfinity::Finite(-100000));
+    assert_eq!(result, DoubleInfiniteNumber::Finite(-100000));
 }

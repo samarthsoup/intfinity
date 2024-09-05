@@ -5,32 +5,32 @@ pub mod intfinity;
 pub mod operations;
 pub mod numeric_impls;
 
-pub use intfinity::{DoubleBoundedInfinity, SingleBoundedInfinity};
+pub use intfinity::{DoubleInfiniteNumber, SingleInfiniteNumber};
 
 #[macro_export]
 macro_rules! intfinity {
     (inf) => {
-        DoubleBoundedInfinity::PosInfinity
+        DoubleInfiniteNumber::PosInfinity
     };
     (-inf) => {
-        DoubleBoundedInfinity::NegInfinity
+        DoubleInfiniteNumber::NegInfinity
     };
     ($val:expr) => {
-        DoubleBoundedInfinity::new($val)
+        DoubleInfiniteNumber::new($val)
     };
     (inf, single_bound) => {
-        SingleBoundedInfinity::Infinity
+        SingleInfiniteNumber::Infinity
     };
     ($val:expr, single_bound) => {
-        SingleBoundedInfinity::new($val)
+        SingleInfiniteNumber::new($val)
     };
     (inf, double_bound) => {
-        DoubleBoundedInfinity::PosInfinity
+        DoubleInfiniteNumber::PosInfinity
     };
     (-inf, double_bound) => {
-        DoubleBoundedInfinity::NegInfinity
+        DoubleInfiniteNumber::NegInfinity
     };
     ($val:expr, double_bound) => {
-        DoubleBoundedInfinity::new($val)
+        DoubleInfiniteNumber::new($val)
     };
 }
