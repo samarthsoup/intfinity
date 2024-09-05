@@ -41,11 +41,11 @@ where
     }
 }
 
-impl<T> std::fmt::Display for DoubleInfiniteNumber<T>
+impl<T> core::fmt::Display for DoubleInfiniteNumber<T>
 where
-    T: std::fmt::Display,
+    T: core::fmt::Display,
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             DoubleInfiniteNumber::Finite(val) => write!(f, "{}", val),
             DoubleInfiniteNumber::PosInfinity => write!(f, "+infinity"),
@@ -81,11 +81,11 @@ where
     }
 }
 
-impl<T> std::fmt::Display for SingleInfiniteNumber<T>
+impl<T> core::fmt::Display for SingleInfiniteNumber<T>
 where
-    T: std::fmt::Display + Unsigned,
+    T: core::fmt::Display + Unsigned,
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             SingleInfiniteNumber::Finite(val) => write!(f, "{}", val),
             SingleInfiniteNumber::Infinity => write!(f, "+infinity"),

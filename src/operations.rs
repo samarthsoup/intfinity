@@ -1,4 +1,4 @@
-use std::ops::{Add,Sub,Mul,Div};
+use core::ops::{Add,Sub,Mul,Div};
 
 use crate::intfinity::{SingleInfiniteNumber,DoubleInfiniteNumber};
 use crate::traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, Negate, Unsigned, Zero};
@@ -179,17 +179,17 @@ impl<T> DoubleInfiniteNumber<T>
 where
     T: PartialEq + PartialOrd,
 {
-    pub fn indeterminate_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+    pub fn indeterminate_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
         match (self, other) {
             (DoubleInfiniteNumber::Finite(a), DoubleInfiniteNumber::Finite(b)) => a.partial_cmp(b),
             (DoubleInfiniteNumber::PosInfinity, DoubleInfiniteNumber::PosInfinity) => None,
             (DoubleInfiniteNumber::NegInfinity, DoubleInfiniteNumber::NegInfinity) => None,
-            (DoubleInfiniteNumber::PosInfinity, DoubleInfiniteNumber::NegInfinity) => Some(std::cmp::Ordering::Greater),  
-            (DoubleInfiniteNumber::NegInfinity, DoubleInfiniteNumber::PosInfinity) => Some(std::cmp::Ordering::Less),  
-            (DoubleInfiniteNumber::PosInfinity, _) => Some(std::cmp::Ordering::Greater),
-            (_, DoubleInfiniteNumber::PosInfinity) => Some(std::cmp::Ordering::Less),
-            (DoubleInfiniteNumber::NegInfinity, _) => Some(std::cmp::Ordering::Less),
-            (_, DoubleInfiniteNumber::NegInfinity) => Some(std::cmp::Ordering::Greater),
+            (DoubleInfiniteNumber::PosInfinity, DoubleInfiniteNumber::NegInfinity) => Some(core::cmp::Ordering::Greater),  
+            (DoubleInfiniteNumber::NegInfinity, DoubleInfiniteNumber::PosInfinity) => Some(core::cmp::Ordering::Less),  
+            (DoubleInfiniteNumber::PosInfinity, _) => Some(core::cmp::Ordering::Greater),
+            (_, DoubleInfiniteNumber::PosInfinity) => Some(core::cmp::Ordering::Less),
+            (DoubleInfiniteNumber::NegInfinity, _) => Some(core::cmp::Ordering::Less),
+            (_, DoubleInfiniteNumber::NegInfinity) => Some(core::cmp::Ordering::Greater),
         }
     }
 }
@@ -287,12 +287,12 @@ impl<T> SingleInfiniteNumber<T>
 where
     T: PartialEq + PartialOrd + Unsigned,
 {
-    pub fn indeterminate_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+    pub fn indeterminate_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
         match (self, other) {
             (SingleInfiniteNumber::Finite(a), SingleInfiniteNumber::Finite(b)) => a.partial_cmp(b),
             (SingleInfiniteNumber::Infinity, SingleInfiniteNumber::Infinity) => None,
-            (SingleInfiniteNumber::Infinity, _) => Some(std::cmp::Ordering::Greater),
-            (_, SingleInfiniteNumber::Infinity) => Some(std::cmp::Ordering::Less)
+            (SingleInfiniteNumber::Infinity, _) => Some(core::cmp::Ordering::Greater),
+            (_, SingleInfiniteNumber::Infinity) => Some(core::cmp::Ordering::Less)
         }
     }
 }

@@ -1,5 +1,5 @@
 //hi
-
+#![no_std]
 pub mod traits;
 pub mod intfinity;
 pub mod operations;
