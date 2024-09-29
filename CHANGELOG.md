@@ -42,4 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.2] - 2024-09-29
 ### Replaced
-- Manual implementations for numeric primitives have been replaced with a macro, which has saved LOC.
+- Manual implementations for numeric primitives have been replaced with a macro, which has reduced LOC.
+
+## [0.3.3] - 2024-09-29
+### Changed
+- Fixed broken links in README.md
