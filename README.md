@@ -14,7 +14,7 @@ Add `intfinity` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-intfinity = "0.3.1"
+intfinity = "0.3.2"
 ```
 
 ## Example Usage
@@ -27,7 +27,7 @@ fn main() {
     
     let result = a + b;
     
-    println!("result = {}", result); // stdout will be "+infinity"
+    assert_eq!(result, DoubleInfiniteNumber::PosInfinity);
 }
 ```
 

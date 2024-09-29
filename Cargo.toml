@@ -1,6 +1,6 @@
 [package]
 name = "intfinity"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 description = "An abstraction over numeric types with infinity implemented."
 repository = "https://github.com/samarthsoup/intfinity"

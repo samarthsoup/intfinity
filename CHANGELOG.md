@@ -39,3 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.1] - 2024-09-06
 ### Added
 - The doctor's report just came in, `intfinity` is now `no-std`!
+
+## [0.3.2] - 2024-09-29
+### Replaced
+- Manual implementations for numeric primitives have been replaced with a macro, which has saved LOC.
